@@ -38,7 +38,7 @@ kotlin {
                     //implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.klib"))))
                     implementation(kotlin("stdlib"))
 
-                    implementation("com.squareup.okio:$okioVersion")
+                    implementation("com.squareup.okio:okio:$okioVersion")
 
                     implementation("com.kgl:kgl-glfw:$kglVersion")
                     implementation("com.kgl:kgl-glfw-static:$kglVersion")
