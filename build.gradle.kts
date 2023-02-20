@@ -4,8 +4,8 @@ plugins {
     kotlin("multiplatform") version "1.7.20" //1.7.20 - last with no compile errors
 }
 
-group = "me.slava"
-version = "1.0-SNAPSHOT"
+group = "org.sadgames"
+version = "1.1-SNAPSHOT"
 
 repositories {
     mavenLocal()
@@ -13,6 +13,7 @@ repositories {
 }
 
 val kglVersion = "0.1.11-2-g41155a8"
+val okioVersion = "3.2.0"
 
 kotlin {
     val os = OperatingSystem.current()
@@ -35,7 +36,9 @@ kotlin {
         compilations { "main" {
                 dependencies {
                     //implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.klib"))))
-                    //implementation(kotlin("stdlib"))
+                    implementation(kotlin("stdlib"))
+
+                    implementation("com.squareup.okio:$okioVersion")
 
                     implementation("com.kgl:kgl-glfw:$kglVersion")
                     implementation("com.kgl:kgl-glfw-static:$kglVersion")
