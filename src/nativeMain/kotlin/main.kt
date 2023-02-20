@@ -1,8 +1,14 @@
-import cglfw.*
+import cglfw.glfwDefaultWindowHints
+import cglfw.glfwInit
+import cglfw.glfwShowWindow
+import cglfw.glfwSwapInterval
 import com.kgl.glfw.*
-import okio.*
+import okio.Buffer
+import okio.FileSystem
+import okio.Path
 import okio.Path.Companion.toPath
-import org.sadgames.engine.*
+import okio.use
+import org.sadgames.engine.GameEngine
 import org.sadgames.engine.render.gl.GLRenderer
 
 private object Game {
@@ -10,14 +16,7 @@ private object Game {
 	private val window: Window
 
 	init {
-		//val file = fopen("/home/slava/CACHED_IMAGES_DB.sq3", "rb")
-		//println("Hello, Kotlin/Native!${file != null}")
-		//fclose(file)
-
 		println(readFromFile("/home/slava/test.txt".toPath(true)))
-
-		//val buffer = PlatformBufferAllocator.allocate(8) // allocates a buffer of 8 bytes
-		//buffer.storeLongAt(0, 123451234567890L) // stores a long value at offset 0
 
 		Glfw.setErrorCallback { error, description -> println("Glfw Error -> $error:$description") }
 		glfwInit()
@@ -56,6 +55,7 @@ private object Game {
 		it.read(buffer, FileSystem.SYSTEM.metadata(path).size ?: 0)
 
 		val result = buffer.readUtf8()
+		//buffer.objcPtr()
 		buffer.close()
 
 		result
@@ -77,8 +77,6 @@ private object Game {
 		window.cursorMode = CursorMode.Normal
 		window.close()
 		Glfw.terminate()
-
-		//PlatformBufferAllocator.free(buffer)
 	}
 }
 
