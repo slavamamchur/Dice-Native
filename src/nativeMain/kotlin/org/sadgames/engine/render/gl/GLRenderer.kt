@@ -1,11 +1,17 @@
 package org.sadgames.engine.render.gl
 
 import com.kgl.opengl.*
+import org.sadgames.engine.GameEngine
 import org.sadgames.engine.render.IRenderer
+import org.sadgames.engine.render.gl.fbo.ColorBufferFBO
+import org.sadgames.engine.utils.Color4f
 
 class GLRenderer: IRenderer {
+
+    private var mainFbo: ColorBufferFBO? = null
+
     init {
-        glClearColor(0.1f, 0.2f, 0.3f, 1.0f)
+        glClearColor(0.1f, 0.2f, 0.3f, 1f)
         glEnable(GL_MULTISAMPLE)
         glEnable(GL_DEPTH_TEST)
         glEnable(GL_CULL_FACE)
@@ -13,16 +19,26 @@ class GLRenderer: IRenderer {
 
     override fun onResize(width: Int, height: Int) {
         glViewport(0, 0, width, height)
-        //TODO("(Re)Create FBos)
+
+        GameEngine.screenWidth = width
+        GameEngine.screenHeight = height
+
+        mainFbo?.cleanUp()
+        mainFbo = ColorBufferFBO(width, height, Color4f(0.1f, 0.2f, 0.3f, 1f), isMultiSampled = true)
     }
 
-    override fun onDraw() {
+    override fun onDraw() { //TODO("Implement")
+        mainFbo?.bind()
+
         glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT)
         glCullFace(GL_BACK)
-        //TODO("Implement")
+
+        mainFbo?.unbind()
+        mainFbo?.blit(null)
     }
 
     override fun onExit() {
         //TODO("Release Buffers, Textures, FBos and other resources")
+        mainFbo?.cleanUp()
     }
 }

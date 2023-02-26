@@ -14,12 +14,20 @@ import org.sadgames.engine.render.IRenderer
 class GameEngine(val window: Window, val renderer: IRenderer) {
     private val gestureDetector = MyGestureDetector(renderer)
 
+    @ThreadLocal companion object {
+        var screenWidth = 0
+        var screenHeight = 0
+    }
+
     init {
         with(window) {
             setFrameBufferCallback { _, w, h -> renderer.onResize(w, h) }
             setMouseButtonCallback(MyMouseButtonCallBack(gestureDetector))
             setCursorPosCallback(MyMouseMoveCallBack(gestureDetector))
             setScrollCallback(MyMouseScrollCallBack(gestureDetector))
+
+            screenWidth = frameBufferSize.first
+            screenHeight = frameBufferSize.second
         }
     }
 }
