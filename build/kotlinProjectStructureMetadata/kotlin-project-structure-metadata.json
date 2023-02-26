@@ -14,7 +14,9 @@
       {
         "name": "commonMain",
         "dependsOn": [],
-        "moduleDependency": [],
+        "moduleDependency": [
+          "com.squareup.sqldelight:runtime"
+        ],
         "sourceSetCInteropMetadataDirectory": "commonMain-cinterop",
         "binaryLayout": "klib"
       }

@@ -4,11 +4,13 @@ import com.kgl.opengl.*
 import org.sadgames.engine.GameEngine
 import org.sadgames.engine.render.IRenderer
 import org.sadgames.engine.render.gl.fbo.ColorBufferFBO
+import org.sadgames.engine.render.gl.fbo.DepthBufferFBO
 import org.sadgames.engine.utils.Color4f
 
 class GLRenderer: IRenderer {
 
     private var mainFbo: ColorBufferFBO? = null
+    private var shadowMap: DepthBufferFBO? = null
 
     init {
         glClearColor(0.1f, 0.2f, 0.3f, 1f)
@@ -22,6 +24,9 @@ class GLRenderer: IRenderer {
 
         GameEngine.screenWidth = width
         GameEngine.screenHeight = height
+
+        shadowMap?.cleanUp()
+        shadowMap = DepthBufferFBO(width / 2, height / 2)
 
         mainFbo?.cleanUp()
         mainFbo = ColorBufferFBO(width, height, Color4f(0.1f, 0.2f, 0.3f, 1f), isMultiSampled = true)
@@ -40,5 +45,6 @@ class GLRenderer: IRenderer {
     override fun onExit() {
         //TODO("Release Buffers, Textures, FBos and other resources")
         mainFbo?.cleanUp()
+        shadowMap?.cleanUp()
     }
 }
