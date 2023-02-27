@@ -1,5 +1,7 @@
 package org.sadgames.engine.utils
 
+import kotlinx.cinterop.CPointed
+import kotlinx.cinterop.toCPointer
 import kotlin.math.*
 import kotlin.random.Random
 
@@ -166,6 +168,15 @@ inline fun slerp(min: Vector3f, max: Vector3f, f: Float): Vector3f {
 }
 
 inline fun nlerp(min: Vector3f, max: Vector3f, f: Float) = lerp(min, max, f).normalized()
+
+inline fun Vector3f.toArray() = floatArrayOf(x, y, z, 1f)
+
+infix fun Vector3f.to(dest: FloatArray) {
+    dest[0] = x
+    dest[1] = y
+    dest[2] = z
+    dest[3] = 1f
+}
 
 /* quaternion classes */
 
@@ -489,6 +500,7 @@ data class Ray(val origin: Vector3f, val direction: Vector3f) {
 
 inline fun Ray.pointAt(t: Float) = origin + direction * t
 
+inline fun Int.toPtr() = if (this == 0) null else this.toLong().toCPointer<CPointed>()
 
 /* color classes */
 typealias Color3f = Vector3f

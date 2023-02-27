@@ -43,7 +43,6 @@ class GLRenderer: IRenderer {
     }
 
     override fun onExit() {
-        //TODO("Release Buffers, Textures, FBos and other resources")
         mainFbo?.cleanUp()
         shadowMap?.cleanUp()
     }
