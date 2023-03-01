@@ -1,5 +1,6 @@
 package org.sadgames.engine.utils
 
+import copengl.GLintVar
 import kotlinx.cinterop.CPointed
 import kotlinx.cinterop.toCPointer
 import kotlin.math.*

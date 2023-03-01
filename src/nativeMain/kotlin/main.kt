@@ -16,8 +16,6 @@ private object Game {
 	private val window: Window
 
 	init {
-		println(readFromFile("/home/slava/test.txt".toPath(true)))
-
 		Glfw.setErrorCallback { error, description -> println("Glfw Error -> $error:$description") }
 		glfwInit()
 
@@ -48,17 +46,6 @@ private object Game {
 		glfwShowWindow(window.ptr) //
 
 		engine = GameEngine(window, GLRenderer())
-	}
-
-	private fun readFromFile(path: Path) = FileSystem.SYSTEM.source(path).use {
-		val buffer = Buffer()
-		it.read(buffer, FileSystem.SYSTEM.metadata(path).size ?: 0)
-
-		val result = buffer.readUtf8()
-		//buffer.objcPtr()
-		buffer.close()
-
-		result
 	}
 
 	fun run() {
