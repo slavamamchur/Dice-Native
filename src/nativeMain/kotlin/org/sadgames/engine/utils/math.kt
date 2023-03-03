@@ -1,6 +1,5 @@
 package org.sadgames.engine.utils
 
-import copengl.GLintVar
 import kotlinx.cinterop.CPointed
 import kotlinx.cinterop.toCPointer
 import kotlin.math.*
@@ -108,8 +107,14 @@ inline infix fun Vector2f.dot(rhs: Vector2f) = x * rhs.x + y * rhs.y
 inline fun distance(a: Vector2f, b: Vector2f) = (a - b).length()
 inline fun distanceSquared(a: Vector2f, b: Vector2f) = (a - b).lengthSquared()
 
-data class Vector3f(val x: Float = 0f, val y: Float = 0f, val z: Float = 0f) {
-    constructor(xyz: Float) : this(xyz, xyz, xyz)
+infix fun Vector2f.to(dest: FloatArray) {
+    dest[0] = x
+    dest[1] = y
+}
+
+data class Vector3f(var x: Float = 0f, var y: Float = 0f, var z: Float = 0f) {
+    constructor(xyz: Float): this(xyz, xyz, xyz)
+    constructor(data: FloatArray): this(data[0], data[1], data[2])
 
     inline operator fun plus(rhs: Vector3f) = Vector3f(x + rhs.x, y + rhs.y, z + rhs.z)
     inline operator fun minus(rhs: Vector3f) = Vector3f(x - rhs.x, y - rhs.y, z - rhs.z)
@@ -182,7 +187,7 @@ infix fun Vector3f.to(dest: FloatArray) {
 /* quaternion classes */
 
 data class Quaternion(val x: Float = 0f, val y: Float = 0f, val z: Float = 0f, val w: Float = 1f) {
-
+    constructor(value: FloatArray): this(value[0], value[1], value[2], value[3])
     inline operator fun plus(rhs: Quaternion) = Quaternion(x + rhs.x, y + rhs.y, z + rhs.z, w + rhs.w)
 
     inline operator fun times(rhs: Float) = Quaternion(x * rhs, y * rhs, z * rhs, w * rhs)
@@ -233,6 +238,13 @@ inline infix fun Quaternion.angle(rhs: Quaternion): Float {
     return acos(min(abs(dot), 1.0F)) * 2.0F
 }
 
+infix fun Vector4f.to(dest: FloatArray) {
+    dest[0] = x
+    dest[1] = y
+    dest[2] = z
+    dest[3] = w
+}
+
 inline fun slerp(min: Quaternion, max: Quaternion, f: Float): Quaternion {
     // Based on code from:
     // http://www.euclideanspace.com/maths/algebra/realNormedAlgebra/quaternions/slerp/index.htm
@@ -268,11 +280,16 @@ inline fun slerp(min: Quaternion, max: Quaternion, f: Float): Quaternion {
 /* matrix classes */
 
 data class Matrix4f(
-    val m11: Float = 1f, val m12: Float = 0f, val m13: Float = 0f, val m14: Float = 0f,
-    val m21: Float = 0f, val m22: Float = 1f, val m23: Float = 0f, val m24: Float = 0f,
-    val m31: Float = 0f, val m32: Float = 0f, val m33: Float = 1f, val m34: Float = 0f,
-    val m41: Float = 0f, val m42: Float = 0f, val m43: Float = 0f, val m44: Float = 1f
+    var m11: Float = 1f, var m12: Float = 0f, var m13: Float = 0f, var m14: Float = 0f,
+    var m21: Float = 0f, var m22: Float = 1f, var m23: Float = 0f, var m24: Float = 0f,
+    var m31: Float = 0f, var m32: Float = 0f, var m33: Float = 1f, var m34: Float = 0f,
+    var m41: Float = 0f, var m42: Float = 0f, var m43: Float = 0f, var m44: Float = 1f
 ) {
+
+    constructor(value: FloatArray): this(value[0], value[1], value[2], value[3],
+                                         value[4], value[5], value[6], value[7],
+                                         value[8], value[9], value[10], value[11],
+                                         value[12], value[13], value[14], value[15])
 
     inline val right
         get() = Vector3f(m11, m21, m31)
@@ -327,6 +344,15 @@ data class Matrix4f(
         )
     }
 
+    inline operator fun timesAssign(scale: Float) {
+        val transformed = this * createScale(Vector3f(scale))
+
+        m11 = transformed.m11; m12 = transformed.m12; m13 = transformed.m13; m14 = transformed.m14
+        m21 = transformed.m21; m22 = transformed.m22; m23 = transformed.m23; m24 = transformed.m24
+        m31 = transformed.m31; m32 = transformed.m32; m33 = transformed.m33; m34 = transformed.m34
+        m41 = transformed.m41; m42 = transformed.m42; m43 = transformed.m43; m44 = transformed.m44
+    }
+
     inline operator fun times(pointRhs: Vector3f): Vector3f {
         var x = pointRhs.x * m11 + pointRhs.y * m12 + pointRhs.z * m13 + m14
         var y = pointRhs.x * m21 + pointRhs.y * m22 + pointRhs.z * m23 + m24
@@ -340,6 +366,15 @@ data class Matrix4f(
         z *= wInv
 
         return Vector3f(x, y, z)
+    }
+
+    inline operator fun times(pointRhs: Vector4f): Vector4f {
+        val x = pointRhs.x * m11 + pointRhs.y * m12 + pointRhs.z * m13 + m14
+        val y = pointRhs.x * m21 + pointRhs.y * m22 + pointRhs.z * m23 + m24
+        val z = pointRhs.x * m31 + pointRhs.y * m32 + pointRhs.z * m33 + m34
+        val w = pointRhs.x * m41 + pointRhs.y * m41 + pointRhs.z * m43 + m44
+
+        return Vector4f(x, y, z, w)
     }
 
     inline infix fun vecTimes(vectorRhs: Vector3f): Vector3f {
@@ -430,6 +465,35 @@ data class Matrix4f(
                 m22 = 2f / (top - bottom), m24 = -(top + bottom) / (top - bottom),
                 m33 = -2f / (far - near), m34 = -(far + near) / (far - near)
             )
+
+        /**
+         * Basically we remove the rotation effect of the view matrix, so that the sun quad is always
+         * facing the camera.
+         */
+        fun applyViewMatrix(modelMatrix: Matrix4f, viewMatrix: Matrix4f): Matrix4f {
+            modelMatrix.m11 = viewMatrix.m11
+            modelMatrix.m12 = viewMatrix.m21
+            modelMatrix.m13 = viewMatrix.m31
+            modelMatrix.m21 = viewMatrix.m12
+            modelMatrix.m22 = viewMatrix.m22
+            modelMatrix.m23 = viewMatrix.m32
+            modelMatrix.m31 = viewMatrix.m13
+            modelMatrix.m32 = viewMatrix.m23
+            modelMatrix.m33 = viewMatrix.m33
+
+            return viewMatrix * modelMatrix
+        }
+
+        fun convertToScreenSpace(worldPos: Vector3f, MVP: Matrix4f): Vector2f? {
+            val coords = MVP * Vector4f(worldPos.x, worldPos.y, worldPos.z, 1f)
+
+            return if (coords.w <= 0) {
+                null
+            }
+            else {
+                Vector2f((coords.x / coords.w + 1f) / 2f, 1f - (coords.y / coords.w + 1f) / 2f)
+            }
+        }
     }
 }
 
@@ -512,6 +576,7 @@ inline val Color3f.g
 inline val Color3f.b
     get() = z
 
+typealias Vector4f = Quaternion
 
 typealias Color4f = Quaternion
 inline val Color4f.r
