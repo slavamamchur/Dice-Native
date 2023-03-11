@@ -1,5 +1,6 @@
 package org.sadgames.engine.scene.items.lights
 
+import org.sadgames.engine.scene.items.AbstractNode
 import org.sadgames.engine.scene.items.camera.AbstractCamera
 import org.sadgames.engine.scene.items.camera.AbstractCamera.Companion.FAR_PLANE
 import org.sadgames.engine.utils.*
@@ -13,8 +14,8 @@ import kotlin.math.cos
 import kotlin.math.sin
 import kotlin.properties.Delegates.observable
 
-open class DirectionalLight(lightPos: FloatArray, var lightColour: Vector3f, camera: AbstractCamera) {
-
+open class DirectionalLight(lightPos: FloatArray, var lightColour: Vector3f, camera: AbstractCamera)
+    : AbstractNode(name = "Sun") {
     companion object {
         fun getPosByDirection(direction: Vector3f) = direction * (FAR_PLANE * 100f)
         fun getUpDirection(dir: Vector3f) = Vector3f(dir.x, (-dir.x * dir.x - dir.z * dir.z) / dir.y, dir.z)

@@ -1,6 +1,9 @@
 package org.sadgames.engine
 
 import com.kgl.glfw.Window
+import org.sadgames.engine.CacheItemType.TEXTURE
+import org.sadgames.engine.cache.AbstractEntityCacheManager
+import org.sadgames.engine.cache.TextureCache
 import org.sadgames.engine.input.MyGestureDetector
 import org.sadgames.engine.input.MyMouseButtonCallBack
 import org.sadgames.engine.input.MyMouseMoveCallBack
@@ -18,6 +21,12 @@ class GameEngine(val window: Window, val renderer: IRenderer) {
         var screenWidth = 0
         var screenHeight = 0
     }
+
+    val gameCache: MutableMap<CacheItemType, AbstractEntityCacheManager<*>> = hashMapOf(
+        TEXTURE to TextureCache
+    )
+
+    var backgroundTextureName: String? = null
 
     init {
         with(window) {

@@ -6,7 +6,6 @@ import copengl.GL_TEXTURE_MAX_ANISOTROPY_EXT
 import copengl.glGetFloatv
 import copengl.glTexParameterf
 import io.ktor.utils.io.core.internal.*
-import kotlinx.cinterop.objcPtr
 import kotlinx.cinterop.refTo
 import org.sadgames.engine.cache.AbstractEntityCacheManager.CachedEntity
 
@@ -19,6 +18,8 @@ abstract class AbstractTexture(width: Int,
     companion object {
         const val GL_EXT_TEXTURE_FILTER_ANISOTROPIC = "GL_EXT_texture_filter_anisotropic"
         const val GLOBAL_USE_MIP_MAP = true
+
+        fun loadFrom(resource: String): AbstractTexture = TODO("Not implemented yet")
     }
 
     var width = width; private set
@@ -35,7 +36,8 @@ abstract class AbstractTexture(width: Int,
     override val isDeleted; get() = textureId == 0u
     override val isReleased; get() = textureData == null
 
-    constructor(width: Int, height: Int, bitmap: BitmapWrapper?, textureName: String? = bitmap?.name, useMipMap: Boolean = GLOBAL_USE_MIP_MAP) : this(width, height, bitmap, textureName, TextureParams(useMipMap))
+    constructor(width: Int, height: Int, bitmap: BitmapWrapper?, textureName: String? = bitmap?.name, useMipMap: Boolean = GLOBAL_USE_MIP_MAP): this(width, height, bitmap, textureName, TextureParams(useMipMap))
+    constructor(bitmap: BitmapWrapper?): this(bitmap?.width ?: 0, bitmap?.height ?: 0, bitmap)
 
     init {
         createTexture(bitmap)
@@ -56,7 +58,11 @@ abstract class AbstractTexture(width: Int,
         if (textureParams.filterMode.isMipMap) {
             val max = FloatArray(16)
             glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, max.refTo(0))
-            glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, max[0].coerceAtMost(16f))
+            glTexParameterf(
+                textureType,
+                GL_TEXTURE_MAX_ANISOTROPY_EXT,
+                max[0].coerceAtMost(16f)
+            )
         }
     }
 
@@ -101,7 +107,7 @@ abstract class AbstractTexture(width: Int,
     }
 
     @OptIn(DangerousInternalIoApi::class)
-    inline fun loadTextureInternal(target: UInt, bitmap: BitmapWrapper) = try {
+    fun loadTextureInternal(target: UInt, bitmap: BitmapWrapper) = try {
             glPixelStorei(GL_UNPACK_ALIGNMENT, 1)
 
             glTexImage2D(target,

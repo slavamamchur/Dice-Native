@@ -9,8 +9,6 @@ import org.sadgames.engine.utils.Color4f
 
 val DEPTH_BUFFER_CLEAR_COLOR = Color4f(1.0f, 1.0f, 1.0f, 1.0f)
 
-const val FBO_TEXTURE_SLOT = 6
-
 enum class GLParamType {
     FLOAT_ATTRIB_ARRAY_PARAM,
     FLOAT_UNIFORM_VECTOR_PARAM,
@@ -81,4 +79,50 @@ val GL_PARAM_TYPES: MutableMap<UInt, GLParamType> = hashMapOf(
             GL_FLOAT_VEC3 to GLParamType.FLOAT_UNIFORM_VECTOR_PARAM,
             GL_FLOAT_VEC4 to GLParamType.FLOAT_UNIFORM_VECTOR4_PARAM)
 
+enum class GraphicsQuality {
+    LOW, MEDIUM, HIGH, ULTRA
+}
 
+val SHADOW_MAP_RESOLUTION_SCALE = floatArrayOf(0.5f, 1.0f, 1.5f, 2.0f)
+val TEXTURE_RESOLUTION_SCALE = intArrayOf(4, 2, 1, 1)
+
+const val MAIN_RENDERER_VERTEX_SHADER = "shaders/vertex_shader.glsl"
+const val MAIN_RENDERER_FRAGMENT_SHADER = "shaders/fragment_shader.glsl"
+const val TERRAIN_RENDERER_VERTEX_SHADER = "shaders/vs_terrain32.glsl"
+const val TERRAIN_RENDERER_GEOMETRY_SHADER = "shaders/gs_terrain32.glsl"
+const val TERRAIN_RENDERER_FRAGMENT_SHADER = "shaders/fs_terrain32.glsl"
+const val PLANET_RENDERER_VERTEX_SHADER = "shaders/vs_planet.glsl"
+const val PLANET_RENDERER_TC_SHADER = "shaders/tc_planet.glsl"
+const val PLANET_RENDERER_TE_SHADER = "shaders/te_planet.glsl"
+const val PLANET_RENDERER_GEOMETRY_SHADER = "shaders/gs_planet.glsl"
+const val PLANET_RENDERER_FRAGMENT_SHADER = "shaders/fs_planet.glsl"
+const val WATER_RENDERER_VERTEX_SHADER = "shaders/vs_water.glsl"
+const val WATER_RENDERER_VERTEX_SHADER_ES32 = "shaders/vs_water_es32.glsl"
+const val WATER_RENDERER_FRAGMENT_SHADER = "shaders/fs_water.glsl"
+const val WATER_RENDERER_GEOMETRY_SHADER = "shaders/gs_water.glsl"
+const val GEN_TERRAIN_FRAGMENT_SHADER = "shaders/fs_genTerrain.glsl"
+const val SHADOWMAP_VERTEX_SHADER = "shaders/v_depth_map.glsl"
+const val SHADOWMAP_VERTEX_SHADER_DEPTH_SUPPORT = "shaders/depth_tex_v_depth_map.glsl"
+const val SHADOWMAP_FRAGMENT_SHADER = "shaders/f_depth_map.glsl"
+const val SHADOWMAP_FRAGMENT_SHADER_DEPTH_SUPPORT = "shaders/depth_tex_f_depth_map.glsl"
+const val SHADOWMAP_GEOMETRY_SHADER_DEPTH_SUPPORT = "shaders/depth_tex_g_depth_map.glsl"
+const val GUI_VERTEX_SHADER = "shaders/gui_vertex.glsl"
+const val SUN_VERTEX_SHADER = "shaders/sun_vertex.glsl"
+const val GUI_FRAGMENT_SHADER = "shaders/gui_fragment.glsl"
+const val SUN_FRAGMENT_SHADER = "shaders/sun_fragment.glsl"
+const val FLARE_FRAGMENT_SHADER = "shaders/flare_fragment.glsl"
+const val FOREST_VERTEX_SHADER = "shaders/forest_vertex.glsl"
+const val SKYBOX_VERTEX_SHADER = "shaders/skybox_vertex.glsl"
+const val SKYBOX_FRAGMENT_SHADER = "shaders/skybox_fragment.glsl"
+const val SKYDOME_VERTEX_SHADER = "shaders/skydome_vertex.glsl"
+const val SKYDOME_FRAGMENT_SHADER = "shaders/skydome_fragment.glsl"
+const val REFLECTION_MAP_VERTEX_SHADER = "shaders/vs_reflect_map.glsl"
+const val REFLECTION_MAP_FRAGMENT_SHADER = "shaders/fs_reflect_map.glsl"
+const val REFRACTION_MAP_VERTEX_SHADER = "shaders/vs_refract_map.glsl"
+const val REFRACTION_MAP_FRAGMENT_SHADER = "shaders/fs_refract_map.glsl"
+const val RAYS_VERTEX_SHADER = "shaders/vs_rays.glsl"
+const val RAYS_FRAGMENT_SHADER = "shaders/fs_rays.glsl"
+
+const val FBO_TEXTURE_SLOT = 6u
+const val BACKGROUND_TEXTURE_SLOT = 7u
+const val ROAD_TILE_TEXTURE_SLOT = 8u

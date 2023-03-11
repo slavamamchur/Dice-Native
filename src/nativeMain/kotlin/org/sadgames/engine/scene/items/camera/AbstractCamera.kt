@@ -1,6 +1,7 @@
 package org.sadgames.engine.scene.items.camera
 
 import org.sadgames.engine.render.animation.IAnimatedObject
+import org.sadgames.engine.scene.items.AbstractNode
 import org.sadgames.engine.scene.items.lights.DirectionalLight
 import org.sadgames.engine.utils.*
 import org.sadgames.engine.utils.Matrix4f.Companion.createLookTowards
@@ -10,9 +11,11 @@ import kotlin.math.*
 import kotlin.properties.Delegates.observable
 
 abstract class AbstractCamera(cameraPosition: Vector3f, var pitch: Float, var yaw: Float, var roll: Float):
-    IAnimatedObject {
+    IAnimatedObject, AbstractNode() {
 
     constructor(eyeX: Float, eyeY: Float, eyeZ: Float, pitch: Float, yaw: Float, roll: Float): this(Vector3f(eyeX, eyeY, eyeZ), pitch, yaw, roll)
+
+    override fun generateName() = "Camera_$itemNumber"
 
     companion object {
         const val NEAR_PLANE = 0.01f
@@ -22,7 +25,6 @@ abstract class AbstractCamera(cameraPosition: Vector3f, var pitch: Float, var ya
         const val ROTATE_BY_Z: Short = 4
 
         const val DEFAULT_CAMERA_VERTICAL_FOV = 45.0f
-
     }
 
     protected var transformMatrix: FloatArray = Matrix4f().toFloatArray()

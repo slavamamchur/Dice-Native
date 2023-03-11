@@ -42,7 +42,7 @@ abstract class AbstractNode(number: Long = -1, name: String? = null, var parent:
             val inum = node.itemNumber
             for (item in childs.values)
                 if (item.itemNumber > inum)
-                    item.itemNumber = item.itemNumber - 1
+                    item.itemNumber -= 1
         }
     }
 

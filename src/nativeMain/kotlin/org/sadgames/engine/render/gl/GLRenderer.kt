@@ -11,6 +11,7 @@ class GLRenderer: IRenderer {
 
     private var mainFbo: ColorBufferFBO? = null
     private var shadowMap: DepthBufferFBO? = null
+    private var refractionMap: ColorBufferFBO? = null
 
     init {
         glClearColor(0.1f, 0.2f, 0.3f, 1f)
@@ -27,6 +28,9 @@ class GLRenderer: IRenderer {
 
         shadowMap?.cleanUp()
         shadowMap = DepthBufferFBO(width / 2, height / 2)
+
+        refractionMap?.cleanUp()
+        refractionMap = ColorBufferFBO(width / 2, height / 2, Color4f(0.0f, 0.0f, 0.0f, 0.0f), true, 2)
 
         mainFbo?.cleanUp()
         mainFbo = ColorBufferFBO(width, height, Color4f(0.1f, 0.2f, 0.3f, 1f), isMultiSampled = true)
@@ -45,5 +49,10 @@ class GLRenderer: IRenderer {
     override fun onExit() {
         mainFbo?.cleanUp()
         shadowMap?.cleanUp()
+        refractionMap?.cleanUp()
     }
+
+    override fun bindShadowMap(slot: UInt) = shadowMap?.fboTexture?.bind(slot)
+    override fun bindWaterDepthMap(slot: UInt) = refractionMap?.depthTexture?.bind(slot)
+    override val shadowMapSize: Pair<Int, Int>; get() = Pair(shadowMap?.width ?: 0, shadowMap?.height ?: 0)
 }
