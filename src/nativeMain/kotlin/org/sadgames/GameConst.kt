@@ -4,7 +4,7 @@ package org.sadgames
  * Created by Slava Mamchur on 09.03.2023.
  */
 
-val SEA_BOTTOM_TEXTURE: String? = "5bae5d26f2675fb54e7cb7dc"
+const val SEA_BOTTOM_TEXTURE = "5bae5d26f2675fb54e7cb7dc"
 const val NORMALMAP_TEXTURE = "5bae5be1f2675fb54e7cb7da"
 const val DUDVMAP_TEXTURE = "5bae5df2f2675fb54e7cb7df"
 const val BLENDING_MAP_TEXTURE = "BLENDING_MAP_TEXTURE"
