@@ -8,6 +8,7 @@ import copengl.glTexParameterf
 import io.ktor.utils.io.core.internal.*
 import kotlinx.cinterop.refTo
 import org.sadgames.engine.cache.AbstractEntityCacheManager.CachedEntity
+import org.sadgames.engine.utils.isNumber
 
 abstract class AbstractTexture(width: Int,
                                height: Int,
@@ -18,8 +19,6 @@ abstract class AbstractTexture(width: Int,
     companion object {
         const val GL_EXT_TEXTURE_FILTER_ANISOTROPIC = "GL_EXT_texture_filter_anisotropic"
         const val GLOBAL_USE_MIP_MAP = true
-
-        fun loadFrom(resource: String): AbstractTexture = TODO("Not implemented yet")
     }
 
     var width = width; private set

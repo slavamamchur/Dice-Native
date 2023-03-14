@@ -18,6 +18,8 @@ class GLRenderer: IRenderer {
         glEnable(GL_MULTISAMPLE)
         glEnable(GL_DEPTH_TEST)
         glEnable(GL_CULL_FACE)
+
+        //todo: test texture loader by getting texture from the cache
     }
 
     override fun onResize(width: Int, height: Int) {
