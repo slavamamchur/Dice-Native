@@ -20,11 +20,11 @@ class GameEngine(val window: Window, val renderer: IRenderer) {
     @ThreadLocal companion object {
         var screenWidth = 0
         var screenHeight = 0
-    }
 
-    val gameCache: MutableMap<CacheItemType, AbstractEntityCacheManager<*>> = hashMapOf(
-        TEXTURE to TextureCache
-    )
+        val gameCache: MutableMap<CacheItemType, AbstractEntityCacheManager<*>> = hashMapOf(
+            TEXTURE to TextureCache
+        )
+    }
 
     var backgroundTextureName: String? = null
 

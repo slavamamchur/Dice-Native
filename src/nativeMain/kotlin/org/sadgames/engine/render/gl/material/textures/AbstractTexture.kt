@@ -106,10 +106,10 @@ abstract class AbstractTexture(width: Int,
     }
 
     @OptIn(DangerousInternalIoApi::class)
-    fun loadTextureInternal(target: UInt, bitmap: BitmapWrapper) = try {
-            glPixelStorei(GL_UNPACK_ALIGNMENT, 1)
+    fun loadTextureInternal(target: UInt, bitmap: BitmapWrapper) {
+        glPixelStorei(GL_UNPACK_ALIGNMENT, 1)
 
-            glTexImage2D(target,
+        glTexImage2D(target,
                     0,
                     GL_RGBA.toInt(),
                     width,
@@ -118,8 +118,7 @@ abstract class AbstractTexture(width: Int,
                     GL_RGBA,
                     GL_UNSIGNED_BYTE,
                     bitmap.rawData?.memory?.pointer)
-
-    } catch (exception: Exception) { throw UnsupportedOperationException() }
+    }
 
     override fun reloadData() = createTexture(null)
     override fun delete() { if (textureId > 0u) deleteTexture() }

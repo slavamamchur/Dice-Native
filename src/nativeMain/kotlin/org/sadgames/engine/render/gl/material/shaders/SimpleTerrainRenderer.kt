@@ -3,6 +3,7 @@ package org.sadgames.engine.render.gl.material.shaders
 import org.sadgames.ROAD_TEXTURE_NAME
 import org.sadgames.TERRAIN_ATLAS_TEXTURE_NAME
 import org.sadgames.engine.CacheItemType.TEXTURE
+import org.sadgames.engine.GameEngine
 import org.sadgames.engine.SettingsManager
 import org.sadgames.engine.render.*
 import org.sadgames.engine.render.gl.material.textures.AbstractTexture
@@ -25,13 +26,13 @@ open class SimpleTerrainRenderer: VBOShaderProgram() {
         val graphicsQualityLevel = SettingsManager.graphicsQualityLevel
         val is2D = SettingsManager.isIn_2D_Mode
 
-        params[ACTIVE_BACKGROUND_SLOT_PARAM_NAME]?.value = (scene.engine.gameCache[TEXTURE]?.get(scene.engine.backgroundTextureName ?: "")
+        params[ACTIVE_BACKGROUND_SLOT_PARAM_NAME]?.value = (GameEngine.gameCache[TEXTURE]?.get(scene.engine.backgroundTextureName ?: "")
                 as AbstractTexture).bind(BACKGROUND_TEXTURE_SLOT)
         params[IS_2D_MODE_PARAM_NAME]?.value = if (is2D) 1 else 0
         params[IS_2D_MODEF_PARAM_NAME]?.value = if (is2D) 1 else 0
         params[ACTIVE_SHADOWMAP_SLOT_PARAM_NAME]?.value = scene.engine.renderer.bindShadowMap(FBO_TEXTURE_SLOT)
-        params[ACTIVE_ROAD_TEXTURE_SLOT_PARAM_NAME]?.value = (scene.engine.gameCache[TEXTURE]?.get(ROAD_TEXTURE_NAME) as AbstractTexture).bind(ROAD_TILE_TEXTURE_SLOT)
-        params[ACTIVE_TERRAIN_TEXTURE_SLOT_PARAM_NAME]?.value = (scene.engine.gameCache[TEXTURE]?.get(TERRAIN_ATLAS_TEXTURE_NAME) as AbstractTexture).bind(ROAD_TILE_TEXTURE_SLOT + 1u)
+        params[ACTIVE_ROAD_TEXTURE_SLOT_PARAM_NAME]?.value = (GameEngine.gameCache[TEXTURE]?.get(ROAD_TEXTURE_NAME) as AbstractTexture).bind(ROAD_TILE_TEXTURE_SLOT)
+        params[ACTIVE_TERRAIN_TEXTURE_SLOT_PARAM_NAME]?.value = (GameEngine.gameCache[TEXTURE]?.get(TERRAIN_ATLAS_TEXTURE_NAME) as AbstractTexture).bind(ROAD_TILE_TEXTURE_SLOT + 1u)
         params[ACTIVE_DEPTHMAP_SLOT_PARAM_NAME]?.value = scene.engine.renderer.bindWaterDepthMap(ROAD_TILE_TEXTURE_SLOT + 2u)
 
         params[CAMERA_POSITION_PARAM_NAME]?.value = scene.activeCamera!!.cameraPosition.toArray()

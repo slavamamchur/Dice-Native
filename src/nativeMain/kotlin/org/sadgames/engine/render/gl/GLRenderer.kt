@@ -1,10 +1,14 @@
 package org.sadgames.engine.render.gl
 
 import com.kgl.opengl.*
+import org.sadgames.engine.CacheItemType
+import org.sadgames.engine.CacheItemType.TEXTURE
 import org.sadgames.engine.GameEngine
+import org.sadgames.engine.GameEngine.Companion.gameCache
 import org.sadgames.engine.render.IRenderer
 import org.sadgames.engine.render.gl.fbo.ColorBufferFBO
 import org.sadgames.engine.render.gl.fbo.DepthBufferFBO
+import org.sadgames.engine.render.gl.material.textures.AbstractTexture
 import org.sadgames.engine.utils.Color4f
 
 class GLRenderer: IRenderer {
@@ -19,7 +23,9 @@ class GLRenderer: IRenderer {
         glEnable(GL_DEPTH_TEST)
         glEnable(GL_CULL_FACE)
 
-        //todo: test texture loader by getting texture from the cache
+        //todo: research how to copy resources by execute build command and how to find path to user dir
+        //val texture = gameCache[TEXTURE]?.get("/home/slava/blm.jpg") as AbstractTexture
+        //texture.release()
     }
 
     override fun onResize(width: Int, height: Int) {

@@ -2,7 +2,7 @@ import org.gradle.internal.os.OperatingSystem
 
 plugins {
     kotlin("multiplatform") version "1.7.20" //1.7.20 - last with no compile errors
-    id("com.squareup.sqldelight") version "1.5.4"
+    //id("com.squareup.sqldelight") version "1.5.4"
 }
 
 group = "org.sadgames"
@@ -70,7 +70,7 @@ kotlin {
 
 }
 
-sqldelight {
+/* sqldelight {
     database("AssetsCacheDb") {
         packageName = "org.sadgames.cubegame.db"
         sourceFolders = listOf("db")
@@ -80,4 +80,4 @@ sqldelight {
     }
 
     linkSqlite = false
-}
+} */

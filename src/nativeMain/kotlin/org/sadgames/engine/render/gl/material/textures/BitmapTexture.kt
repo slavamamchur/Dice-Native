@@ -20,7 +20,7 @@ class BitmapTexture(bitmap: BitmapWrapper, useMipMap: Boolean = GLOBAL_USE_MIP_M
     companion object {
         fun loadFrom(resource: String): BitmapTexture {
             return BitmapTexture(if (resource.isNumber)
-                BitmapWrapper(resource.toUInt())
+                BitmapWrapper(resource.toUInt(16))
             else BitmapWrapper(resource))
         }
     }
