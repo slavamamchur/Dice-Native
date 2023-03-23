@@ -1,5 +1,6 @@
 package org.sadgames.engine.scene.items
 
+import org.sadgames.engine.SceneItemType
 import kotlin.system.getTimeMillis
 
 /**
@@ -11,6 +12,8 @@ abstract class AbstractNode(number: Long = -1, name: String? = null, var parent:
     interface ISceneObjectsCondition { fun checkCondition(item: AbstractNode?): Boolean }
 
     val childs: MutableMap<String, AbstractNode> = HashMap()
+
+    abstract val type: SceneItemType
 
     var itemNumber = number
         set(value) {

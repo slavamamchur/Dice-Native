@@ -76,6 +76,6 @@ abstract class VBOShaderProgram {
 
     protected open fun bindLightSourceMVP(renderable: IDrawableItem, ls: DirectionalLight?, hasDepthTextureExtension: Boolean) {
         params[LIGHT_MVP_MATRIX_PARAM_NAME]?.value =
-            (Matrix4f(BIAS) * (Matrix4f(ls!!.projectionMatrix) * (Matrix4f(ls.viewMatrix) * Matrix4f(renderable.transform)))).toFloatArray()
+            (Matrix4f(BIAS) * (Matrix4f(ls!!.projectionMatrix) * (Matrix4f(ls.viewMatrix) * renderable.transform))).toFloatArray()
     }
 }

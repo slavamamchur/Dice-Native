@@ -20,4 +20,11 @@ enum class CacheItemType {
     GAME
 }
 
+enum class SceneItemType {
+    ROOT_ITEM,
+    DRAWABLE_ITEM,
+    LIGHT_SOURCE_ITEM,
+    CAMERA_ITEM
+}
+
 val IO = FileSystem.SYSTEM

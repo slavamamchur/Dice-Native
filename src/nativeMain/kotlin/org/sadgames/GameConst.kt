@@ -1,5 +1,7 @@
 package org.sadgames
 
+import org.sadgames.engine.utils.argb
+
 /**
  * Created by Slava Mamchur on 09.03.2023.
  */
@@ -32,9 +34,32 @@ const val SKY_BOX_CUBE_MAP_OBJECT = "SKY_BOX_CUBE_MAP_OBJECT"
 const val MINI_MAP_OBJECT = "MINI_MAP_OBJECT"
 const val SUN_OBJECT = "SUN_OBJECT"
 
+val PATH_COLOR: Int = argb(255, 0, 255, 0)
+val WAY_POINT_COLOR: Int = argb(255, 255, 0, 0)
+
 const val NO_POST_EFFECTS: UShort = 0x00u
 const val GOD_RAYS_POST_EFFECT: UShort = 0x01u
 const val CONTRAST_CHARGE_EFFECT: UShort = 0x02u
 const val BLUR_EFFECT: UShort = 0x04u
 const val BLOOM_EFFECT: UShort = 0x10u
 const val DOF_EFFECT: UShort = 0x20u
+
+const val ON_BEFORE_DRAW_FRAME_EVENT_HANDLER = "beforeDrawFrame"
+const val ON_ROLLING_OBJECT_START_EVENT_HANDLER = "onRollingObjectStart"
+const val ON_ROLLING_OBJECT_STOP_EVENT_HANDLER = "onRollingObjectStop"
+const val ON_MOVING_OBJECT_STOP_EVENT_HANDLER = "onMovingObjectStop"
+const val ON_PLAY_TURN_EVENT_HANDLER = "onPlayTurn"
+const val ON_PLAYER_MAKE_TURN_EVENT_HANDLER = "onPlayerMakeTurn"
+const val ON_PLAYER_CONTINUE_TURN_EVENT_HANDLER = "onPlayerContinueTurn"
+const val ON_PLAYER_NEXT_MOVE__EVENT_HANDLER = "playerNextMove"
+const val ON_CREATE_DYNAMIC_ITEMS_HANDLER = "onCreateDynamicItems"
+const val ON_GAME_RESTARTED_EVENT_HANDLER = "onGameRestarted"
+const val ON_PREPARE_MAP_TEXTURE_EVENT_HANDLER = "drawPath"
+const val ON_CREATE_REFLECTION_MAP_EVENT_HANDLER = "onCreateReflectionMap"
+const val ON_INIT_CAMERA_EVENT_HANDLER = "onCameraInit"
+const val ON_INIT_LIGHT_SOURCE_EVENT_HANDLER = "onInitLightSource"
+const val ON_INIT_PHYSICS_EVENT_HANDLER = "onInitPhysics"
+
+enum class GameState {
+    WAIT, MOVING, FINISHED
+}

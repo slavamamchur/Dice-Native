@@ -291,6 +291,11 @@ data class Matrix4f(
                                          value[8], value[9], value[10], value[11],
                                          value[12], value[13], value[14], value[15])
 
+    constructor(m: Matrix4f): this(m.m11, m.m12, m.m13, m.m14,
+                                   m.m21, m.m22, m.m23, m.m24,
+                                   m.m31, m.m32, m.m33, m.m34,
+                                   m.m41, m.m42, m.m43, m.m44)
+
     inline val right
         get() = Vector3f(m11, m21, m31)
 
@@ -344,14 +349,16 @@ data class Matrix4f(
         )
     }
 
-    inline operator fun timesAssign(scale: Float) {
-        val transformed = this * createScale(Vector3f(scale))
-
+    fun reAssign(transformed: Matrix4f) {
         m11 = transformed.m11; m12 = transformed.m12; m13 = transformed.m13; m14 = transformed.m14
         m21 = transformed.m21; m22 = transformed.m22; m23 = transformed.m23; m24 = transformed.m24
         m31 = transformed.m31; m32 = transformed.m32; m33 = transformed.m33; m34 = transformed.m34
         m41 = transformed.m41; m42 = transformed.m42; m43 = transformed.m43; m44 = transformed.m44
     }
+
+    inline operator fun timesAssign(scale: Float) = reAssign(this * createScale(Vector3f(scale)))
+    inline operator fun timesAssign(position: Vector3f) = reAssign(this * createTranslation(position))
+    inline operator fun timesAssign(rotation: Vector4f) = reAssign(this * createRotationFromQuaternion(rotation))
 
     inline operator fun times(pointRhs: Vector3f): Vector3f {
         var x = pointRhs.x * m11 + pointRhs.y * m12 + pointRhs.z * m13 + m14
