@@ -1,6 +1,7 @@
 package org.sadgames.engine.render.gl
 
 import com.kgl.opengl.*
+import org.sadgames.GLObjectType
 import org.sadgames.engine.CacheItemType
 import org.sadgames.engine.CacheItemType.TEXTURE
 import org.sadgames.engine.GameEngine
@@ -8,14 +9,36 @@ import org.sadgames.engine.GameEngine.Companion.gameCache
 import org.sadgames.engine.render.IRenderer
 import org.sadgames.engine.render.gl.fbo.ColorBufferFBO
 import org.sadgames.engine.render.gl.fbo.DepthBufferFBO
+import org.sadgames.engine.render.gl.material.shaders.*
 import org.sadgames.engine.render.gl.material.textures.AbstractTexture
 import org.sadgames.engine.utils.Color4f
 
 class GLRenderer: IRenderer {
+    companion object {
+        private val shaderCache: MutableMap<GLObjectType, VBOShaderProgram> = hashMapOf()
+        fun createShader(type: GLObjectType) = shaderCache[type] ?:  (when (type) {
+                GLObjectType.TERRAIN_OBJECT_32 -> ImprovedTerrainRenderer()
+                //GLObjectType.WATER_OBJECT -> WaterRendererProgram()
+                //GLObjectType.GEN_TERRAIN_OBJECT -> GenTerrainProgram()
+                GLObjectType.SHADOW_MAP_OBJECT -> ShadowMapProgram()
+                GLObjectType.GUI_OBJECT -> GUIRendererProgram()
+                //GLObjectType.SKY_BOX_OBJECT -> SkyBoxProgram()
+                //GLObjectType.SKY_DOME_OBJECT -> SkyDomeProgram()
+                //GLObjectType.SUN_OBJECT -> SunRendererProgram()
+                //GLObjectType.FLARE_OBJECT -> SunFlareProgram()
+                //GLObjectType.FOREST_OBJECT -> ForestRenderer()
+                //GLObjectType.REFLECTION_MAP_OBJECT -> ReflectionMapRenderProgram()
+                //GLObjectType.REFRACTION_MAP_OBJECT -> RefractionMapRenderProgram()
+                //GLObjectType.RAYS_MAP_OBJECT -> RaysMapProgram()
+                //GLObjectType.PLANET_OBJECT -> PlanetRendererProgram()
+                else -> SimpleTerrainRenderer()
+            }).also {shaderCache[type] = it}
+    }
 
     private var mainFbo: ColorBufferFBO? = null
     private var shadowMap: DepthBufferFBO? = null
     private var refractionMap: ColorBufferFBO? = null
+
 
     init {
         glClearColor(0.1f, 0.2f, 0.3f, 1f)
@@ -25,7 +48,8 @@ class GLRenderer: IRenderer {
 
         //todo: research how to copy resources by execute build command and how to find path to user dir
         //val texture = gameCache[TEXTURE]?.get("/home/slava/blm.jpg") as AbstractTexture
-        //texture.release()
+        //todo: check texture in box2d
+
     }
 
     override fun onResize(width: Int, height: Int) {

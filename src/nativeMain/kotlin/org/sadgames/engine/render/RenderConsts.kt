@@ -126,3 +126,8 @@ const val RAYS_FRAGMENT_SHADER = "shaders/fs_rays.glsl"
 const val FBO_TEXTURE_SLOT = 6u
 const val BACKGROUND_TEXTURE_SLOT = 7u
 const val ROAD_TILE_TEXTURE_SLOT = 8u
+
+const val VERTEX_SIZE = 3
+const val TEXEL_UV_SIZE = 2
+const val VBO_ITEM_SIZE = VERTEX_SIZE + TEXEL_UV_SIZE
+const val VBO_STRIDE = VBO_ITEM_SIZE * 4

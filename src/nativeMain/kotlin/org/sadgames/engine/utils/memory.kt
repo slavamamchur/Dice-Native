@@ -1,6 +1,7 @@
 package org.sadgames.engine.utils
 
 import io.ktor.utils.io.bits.*
+import io.ktor.utils.io.core.*
 import io.ktor.utils.io.core.internal.*
 import kotlinx.cinterop.*
 
@@ -12,8 +13,12 @@ inline val IntArray.ptr; get() = this.refTo(0).getPointer(MemScope())
 @OptIn(ExperimentalUnsignedTypes::class)
 inline val UIntArray.ptr; get() = this.refTo(0).getPointer(MemScope())
 inline val ByteArray.ptr; get() = this.refTo(0).getPointer(MemScope())
+inline val FloatArray.ptr; get() = this.refTo(0).getPointer(MemScope())
 
 @OptIn(DangerousInternalIoApi::class)
 inline fun Memory.clone() = Memory(nativeHeap.allocArray(this.size), this.size).also {
     this.copyTo(it, 0, this.size, 0)
 }
+
+@OptIn(DangerousInternalIoApi::class)
+inline fun allocateBuffer(size: Long): Buffer = Buffer(Memory(nativeHeap.allocArray(size), size))

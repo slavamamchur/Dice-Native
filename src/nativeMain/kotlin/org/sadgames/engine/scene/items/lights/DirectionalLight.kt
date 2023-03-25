@@ -1,5 +1,6 @@
 package org.sadgames.engine.scene.items.lights
 
+import org.sadgames.engine.SceneItemType
 import org.sadgames.engine.scene.items.AbstractNode
 import org.sadgames.engine.scene.items.camera.AbstractCamera
 import org.sadgames.engine.scene.items.camera.AbstractCamera.Companion.FAR_PLANE
@@ -21,6 +22,8 @@ open class DirectionalLight(lightPos: FloatArray, var lightColour: Vector3f, cam
         fun getUpDirection(dir: Vector3f) = Vector3f(dir.x, (-dir.x * dir.x - dir.z * dir.z) / dir.y, dir.z)
         fun getRightDirection(dir: Vector3f, up: Vector3f) = up cross dir
     }
+
+    override val type; get() = SceneItemType.LIGHT_SOURCE_ITEM
 
     var lightPosInModelSpace = FloatArray(4)
         set(value) {

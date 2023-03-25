@@ -20,4 +20,5 @@ class FPVCamera(eyeX: Float, eyeY: Float, eyeZ: Float, pitch: Float, yaw: Float,
     override fun setPosition(position: Vector3f) {
         cameraPosition = position
     }
+
 }

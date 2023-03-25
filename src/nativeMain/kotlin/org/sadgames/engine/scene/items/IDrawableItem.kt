@@ -15,6 +15,7 @@ interface IDrawableItem {
     val castShadow: Boolean; get() = true
     val reflected: Boolean; get() = true
     val drawInRaysBuffer: Boolean; get() = true
+    val instancedItem: Boolean; get() = false
 
     var position: Vector3f
     //var place: Vector2f //todo: moveto -> GameItem
@@ -22,8 +23,6 @@ interface IDrawableItem {
     var rotationY: Float
     var rotationZ: Float
     var scaleFactor: Float
-
-    //var effects: Int //todo: moveto -> GL2DBox
 
     fun updateTransform() {
         transform.reAssign(Matrix4f.IDENTITY)
@@ -39,5 +38,5 @@ interface IDrawableItem {
     fun loadFromObject(src: IDrawableItem)
     fun bindObject()
     fun render()
-    fun clearData()
+    fun release()
 }

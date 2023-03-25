@@ -78,4 +78,28 @@ abstract class VBOShaderProgram {
         params[LIGHT_MVP_MATRIX_PARAM_NAME]?.value =
             (Matrix4f(BIAS) * (Matrix4f(ls!!.projectionMatrix) * (Matrix4f(ls.viewMatrix) * renderable.transform))).toFloatArray()
     }
+
+    fun setMVPMatrixData(data: FloatArray) {
+        params[MVP_MATRIX_PARAM_NAME]?.value = data
+    }
+
+    fun setMVMatrixData(data: FloatArray) {
+        params[MV_MATRIX_PARAM_NAME]?.value = data
+        params[MV_MATRIXF_PARAM_NAME]?.value = data
+    }
+
+    open fun bindMVPMatrix(renderable: IDrawableItem, viewMatrix: Matrix4f, projectionMatrix: Matrix4f) {
+        val mMVMatrix = viewMatrix * renderable.transform
+        setMVMatrixData(mMVMatrix.toFloatArray())
+        setMVPMatrixData((projectionMatrix * mMVMatrix).toFloatArray())
+    }
+
+    fun setAdditionalParams(paramMap: Map<String, Any>) {
+        for (entry in paramMap.entries) {
+            val param = params[entry.key]
+
+            if (param != null && param.paramReference >= 0)
+                param.value = entry.value
+        }
+    }
 }

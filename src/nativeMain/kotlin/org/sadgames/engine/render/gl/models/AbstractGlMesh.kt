@@ -74,7 +74,7 @@ abstract class AbstractGlMesh(var program: VBOShaderProgram): AbstractNode(), ID
             glDrawElements(GL_TRIANGLE_STRIP, facesCount, GL_UNSIGNED_SHORT, null)
     }
 
-    override fun clearData() {
+    override fun release() {
         clearVBOPtr(vertexesVBO)
         vertexesVBO = null
         clearVBOPtr(texelsVBO)
@@ -87,10 +87,10 @@ abstract class AbstractGlMesh(var program: VBOShaderProgram): AbstractNode(), ID
         glDeleteVertexArray(id)
     }
 
-    var vertexesVBO: VBOData? = null; private set
-    var texelsVBO: VBOData? = null; private set
-    var normalsVBO: VBOData? = null; private set
-    var facesIBO: VBOData? = null; private set
+    var vertexesVBO: VBOData? = null; protected set
+    var texelsVBO: VBOData? = null; protected set
+    var normalsVBO: VBOData? = null; protected set
+    var facesIBO: VBOData? = null; protected set
 
     protected abstract fun createVertexesVBO()
     protected abstract fun createTexelsVBO()

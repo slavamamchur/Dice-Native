@@ -1,5 +1,6 @@
 package org.sadgames.engine.scene.items.camera
 
+import org.sadgames.engine.SceneItemType
 import org.sadgames.engine.render.animation.IAnimatedObject
 import org.sadgames.engine.scene.items.AbstractNode
 import org.sadgames.engine.scene.items.lights.DirectionalLight
@@ -14,6 +15,8 @@ abstract class AbstractCamera(cameraPosition: Vector3f, var pitch: Float, var ya
     IAnimatedObject, AbstractNode() {
 
     constructor(eyeX: Float, eyeY: Float, eyeZ: Float, pitch: Float, yaw: Float, roll: Float): this(Vector3f(eyeX, eyeY, eyeZ), pitch, yaw, roll)
+
+    override val type; get() = SceneItemType.CAMERA_ITEM
 
     override fun generateName() = "Camera_$itemNumber"
 
