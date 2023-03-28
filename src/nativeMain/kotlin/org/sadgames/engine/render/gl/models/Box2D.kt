@@ -5,6 +5,7 @@ import com.kgl.opengl.glDrawArrays
 import io.ktor.utils.io.bits.*
 import io.ktor.utils.io.core.*
 import io.ktor.utils.io.core.internal.*
+import kotlinx.cinterop.convert
 import kotlinx.cinterop.refTo
 import org.sadgames.GLObjectType
 import org.sadgames.engine.CacheItemType.TEXTURE
@@ -18,6 +19,7 @@ import org.sadgames.engine.render.gl.material.shaders.params.VBOData.Companion.E
 import org.sadgames.engine.render.gl.material.textures.AbstractTexture
 import org.sadgames.engine.utils.Vector4f
 import org.sadgames.engine.utils.allocateBuffer
+import org.sadgames.engine.utils.memSize
 
 /**
  * Created by Slava Mamchur on 23.03.2023.
@@ -52,7 +54,8 @@ class Box2D(box: Vector4f,
         )
 
         vertexesVBO = VBOData(ElementType.VERTEX, VERTEX_SIZE, 0, 0,
-            allocateBuffer((vertexes.size * Float.SIZE_BYTES).toLong()).also { it.writeFullyLittleEndian(vertexes) })
+                              allocateBuffer(vertexes.memSize)
+                              .also { it.writeFullyLittleEndian(vertexes) }.memory)
     }
 
     @OptIn(DangerousInternalIoApi::class)
@@ -65,7 +68,8 @@ class Box2D(box: Vector4f,
         )
 
         texelsVBO = VBOData(ElementType.VERTEX, TEXEL_UV_SIZE, 0, 0,
-            allocateBuffer((uvs.size * Float.SIZE_BYTES).toLong()).also { it.writeFullyLittleEndian(uvs) })
+                            allocateBuffer(uvs.memSize)
+                            .also { it.writeFullyLittleEndian(uvs) }.memory)
     }
 
     override fun createNormalsVBO() {}
@@ -74,7 +78,10 @@ class Box2D(box: Vector4f,
     fun bind() {
         program.useProgram()
         bindObject()
+        bindLocals()
+    }
 
+    override fun bindLocals() {
         val param = program.params[ACTIVE_TEXTURE_SLOT_PARAM_NAME] //todo: move reference check into paramByName() code
 
         if (background != null && param != null && param.paramReference >= 0)

@@ -41,6 +41,10 @@ class GLRenderer: IRenderer {
     private var shadowMap: DepthBufferFBO? = null
     private var refractionMap: ColorBufferFBO? = null
 
+    private var screen = Box2D(Vector4f(-1f, 1f, 1f, -1f),
+                            false,
+                            textureId = "/home/slava/blm.jpg").also { it.loadObject() }
+
     init {
         glClearColor(0.1f, 0.2f, 0.3f, 1f)
         glEnable(GL_MULTISAMPLE)
@@ -72,6 +76,9 @@ class GLRenderer: IRenderer {
 
         glDisable(GL_DEPTH_TEST)
 
+        screen.bind()
+        screen.render()
+
         mainFbo?.unbind()
         mainFbo?.blit(null)
     }
@@ -83,6 +90,8 @@ class GLRenderer: IRenderer {
 
         shaderCache.forEach { it.value.deleteProgram() }
         shaderCache.clear()
+
+        screen.release()
     }
 
     override fun bindShadowMap(slot: UInt) = shadowMap?.fboTexture?.bind(slot)

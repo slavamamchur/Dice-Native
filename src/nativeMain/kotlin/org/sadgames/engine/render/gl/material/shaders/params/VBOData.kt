@@ -7,12 +7,11 @@ import io.ktor.utils.io.core.internal.*
 import kotlinx.cinterop.convert
 import kotlinx.cinterop.nativeHeap
 
-@OptIn(DangerousInternalIoApi::class)
 class VBOData(val type: ElementType = ElementType.INDEX,
                 val size: Int = Short.SIZE_BYTES,
                 val stride: Int = 0,
                 val pos: Int = 0,
-                data: Buffer) {
+                data: Memory) {
 
     companion object {
         enum class ElementType { VERTEX, INDEX }
@@ -27,10 +26,10 @@ class VBOData(val type: ElementType = ElementType.INDEX,
         val glType = types[type]!!
 
         glBindBuffer(glType, vboPtr)
-        glBufferData(glType, data.capacity.convert(), data.memory.pointer, GL_STATIC_DRAW)
+        glBufferData(glType, data.size, data.pointer, GL_STATIC_DRAW)
         glBindBuffer(glType, 0u)
 
-        nativeHeap.free(data.memory)
+        nativeHeap.free(data)
     }
 
     fun clear() {
