@@ -5,8 +5,8 @@ import com.kgl.opengl.glDrawArrays
 import io.ktor.utils.io.bits.*
 import io.ktor.utils.io.core.*
 import io.ktor.utils.io.core.internal.*
+import kotlinx.cinterop.refTo
 import org.sadgames.GLObjectType
-import org.sadgames.engine.CacheItemType
 import org.sadgames.engine.CacheItemType.TEXTURE
 import org.sadgames.engine.GameEngine.Companion.gameCache
 import org.sadgames.engine.render.ACTIVE_TEXTURE_SLOT_PARAM_NAME
@@ -40,9 +40,7 @@ class Box2D(box: Vector4f,
     override val reflected: Boolean; get() = false
     override val facesCount; get() = 4
 
-    override fun render() {
-        glDrawArrays(GL_TRIANGLE_STRIP, 0, facesCount)
-    }
+    override fun render() = glDrawArrays(GL_TRIANGLE_STRIP, 0, facesCount)
 
     @OptIn(DangerousInternalIoApi::class)
     override fun createVertexesVBO() {
@@ -54,12 +52,12 @@ class Box2D(box: Vector4f,
         )
 
         vertexesVBO = VBOData(ElementType.VERTEX, VERTEX_SIZE, 0, 0,
-            allocateBuffer(vertexes.size.toLong()).also { it.writeFully(vertexes) })
+            allocateBuffer((vertexes.size * Float.SIZE_BYTES).toLong()).also { it.writeFullyLittleEndian(vertexes) })
     }
 
     @OptIn(DangerousInternalIoApi::class)
     override fun createTexelsVBO() {
-        val texcoords = floatArrayOf(
+        val uvs = floatArrayOf(
             0.0f, 1.0f - if (isReftectedY) 1 else 0,
             0.0f, 0.0f + if (isReftectedY) 1 else 0,
             1.0f, 1.0f - if (isReftectedY) 1 else 0,
@@ -67,13 +65,16 @@ class Box2D(box: Vector4f,
         )
 
         texelsVBO = VBOData(ElementType.VERTEX, TEXEL_UV_SIZE, 0, 0,
-            allocateBuffer(texcoords.size.toLong()).also { it.writeFully(texcoords) })
+            allocateBuffer((uvs.size * Float.SIZE_BYTES).toLong()).also { it.writeFullyLittleEndian(uvs) })
     }
 
     override fun createNormalsVBO() {}
     override fun createFacesIBO() {}
 
-    fun bindMaterial() {
+    fun bind() {
+        program.useProgram()
+        bindObject()
+
         val param = program.params[ACTIVE_TEXTURE_SLOT_PARAM_NAME] //todo: move reference check into paramByName() code
 
         if (background != null && param != null && param.paramReference >= 0)

@@ -2,6 +2,7 @@ package org.sadgames.engine.render.gl.material.shaders
 
 import com.kgl.opengl.*
 import io.ktor.utils.io.bits.*
+import io.ktor.utils.io.charsets.*
 import io.ktor.utils.io.core.*
 import io.ktor.utils.io.core.internal.*
 import org.sadgames.engine.utils.ptr
@@ -94,7 +95,8 @@ class MyShaderProgram internal constructor(private val programList: Map<UInt, St
     private fun compileShaders() {
         run loop@{
             programList.forEach() {
-                val handle = loadShader(it.key, prependCode + readTextFromFile("/${it.value}"))
+                //todo: change to relative path for release build
+                val handle = loadShader(it.key, prependCode + readTextFromFile("/home/slava/temp/resources/${it.value}"))
                 isCompiled = handle > 0u
 
                 if (isCompiled)
@@ -119,7 +121,7 @@ class MyShaderProgram internal constructor(private val programList: Map<UInt, St
         val numAttributes = length[0]
         for (i in 0u until numAttributes.toUInt()) {
             glGetActiveAttrib(programId, i, 256, length.ptr, size.ptr, type.ptr, name.ptr)
-            attributeNames.add(name.toString())
+            attributeNames.add(String(name, 0, length[0], Charsets.UTF_8))
         }
     }
 
@@ -134,7 +136,7 @@ class MyShaderProgram internal constructor(private val programList: Map<UInt, St
         val numUniforms = length[0]
         for (i in 0u until numUniforms.toUInt()) {
             glGetActiveUniform(programId, i, 256, length.ptr, size.ptr, type.ptr, name.ptr)
-            uniformTypes[name.toString()] = type[0]
+            uniformTypes[String(name, 0, length[0], Charsets.UTF_8)] = type[0]
         }
     }
 

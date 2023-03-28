@@ -3,11 +3,6 @@ import cglfw.glfwInit
 import cglfw.glfwShowWindow
 import cglfw.glfwSwapInterval
 import com.kgl.glfw.*
-import okio.Buffer
-import okio.FileSystem
-import okio.Path
-import okio.Path.Companion.toPath
-import okio.use
 import org.sadgames.engine.GameEngine
 import org.sadgames.engine.render.gl.GLRenderer
 
@@ -49,18 +44,21 @@ private object Game {
 	}
 
 	fun run() {
+		engine.startGame()
+
 		do {
 			if (window.getKey(KeyboardKey.ESCAPE) == Action.Press) {
 				window.shouldClose = true
 			}
 
-			engine.renderer.onDraw()
+			engine.drawScene()
 
 			window.swapBuffers()
 			Glfw.pollEvents()
 		} while (!window.shouldClose)
 
-		engine.renderer.onExit()
+		engine.stopGame()
+
 		window.cursorMode = CursorMode.Normal
 		window.close()
 		Glfw.terminate()

@@ -11,7 +11,10 @@ import org.sadgames.engine.render.gl.fbo.ColorBufferFBO
 import org.sadgames.engine.render.gl.fbo.DepthBufferFBO
 import org.sadgames.engine.render.gl.material.shaders.*
 import org.sadgames.engine.render.gl.material.textures.AbstractTexture
+import org.sadgames.engine.render.gl.models.Box2D
+import org.sadgames.engine.scene.GameScene
 import org.sadgames.engine.utils.Color4f
+import org.sadgames.engine.utils.Vector4f
 
 class GLRenderer: IRenderer {
     companion object {
@@ -30,7 +33,6 @@ class GLRenderer: IRenderer {
                 //GLObjectType.REFLECTION_MAP_OBJECT -> ReflectionMapRenderProgram()
                 //GLObjectType.REFRACTION_MAP_OBJECT -> RefractionMapRenderProgram()
                 //GLObjectType.RAYS_MAP_OBJECT -> RaysMapProgram()
-                //GLObjectType.PLANET_OBJECT -> PlanetRendererProgram()
                 else -> SimpleTerrainRenderer()
             }).also {shaderCache[type] = it}
     }
@@ -39,17 +41,11 @@ class GLRenderer: IRenderer {
     private var shadowMap: DepthBufferFBO? = null
     private var refractionMap: ColorBufferFBO? = null
 
-
     init {
         glClearColor(0.1f, 0.2f, 0.3f, 1f)
         glEnable(GL_MULTISAMPLE)
         glEnable(GL_DEPTH_TEST)
         glEnable(GL_CULL_FACE)
-
-        //todo: research how to copy resources by execute build command and how to find path to user dir
-        //val texture = gameCache[TEXTURE]?.get("/home/slava/blm.jpg") as AbstractTexture
-        //todo: check texture in box2d
-
     }
 
     override fun onResize(width: Int, height: Int) {
@@ -68,11 +64,13 @@ class GLRenderer: IRenderer {
         mainFbo = ColorBufferFBO(width, height, Color4f(0.1f, 0.2f, 0.3f, 1f), isMultiSampled = true)
     }
 
-    override fun onDraw() { //TODO("Implement")
+    override fun onDraw(scene: GameScene) {
         mainFbo?.bind()
 
         glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT)
         glCullFace(GL_BACK)
+
+        glDisable(GL_DEPTH_TEST)
 
         mainFbo?.unbind()
         mainFbo?.blit(null)
@@ -82,6 +80,9 @@ class GLRenderer: IRenderer {
         mainFbo?.cleanUp()
         shadowMap?.cleanUp()
         refractionMap?.cleanUp()
+
+        shaderCache.forEach { it.value.deleteProgram() }
+        shaderCache.clear()
     }
 
     override fun bindShadowMap(slot: UInt) = shadowMap?.fboTexture?.bind(slot)

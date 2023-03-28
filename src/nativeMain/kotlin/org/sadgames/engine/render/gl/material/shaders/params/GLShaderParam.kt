@@ -18,7 +18,7 @@ open class GLShaderParam(protected val paramType: GLParamType, val paramName: St
 
             if (paramReference >= 0)
                 when (paramType) {
-                    GLParamType.FLOAT_ATTRIB_ARRAY_PARAM ->
+                    FLOAT_ATTRIB_ARRAY_PARAM ->
                         if (value is VBOData)
                             setParamValue(value)
                         else
