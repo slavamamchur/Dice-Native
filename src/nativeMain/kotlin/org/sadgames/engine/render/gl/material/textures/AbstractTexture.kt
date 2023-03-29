@@ -117,7 +117,7 @@ abstract class AbstractTexture(width: Int,
                     0,
                     GL_RGBA,
                     GL_UNSIGNED_BYTE,
-                    bitmap.rawData?.pointer)
+                    bitmap.rawData.pointer)
     }
 
     override fun reloadData() = createTexture(null)
