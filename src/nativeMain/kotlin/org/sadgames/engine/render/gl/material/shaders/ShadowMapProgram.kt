@@ -1,5 +1,6 @@
 package org.sadgames.engine.render.gl.material.shaders
 
+import org.sadgames.engine.GameEngine
 import org.sadgames.engine.render.IS_OBJECT_GROUP_PARAM_NAME
 import org.sadgames.engine.render.MODEL_MATRIX_PARAM_NAME
 import org.sadgames.engine.render.SHADOWMAP_FRAGMENT_SHADER_DEPTH_SUPPORT
@@ -15,8 +16,8 @@ open class ShadowMapProgram : VBOShaderProgram() {
     override fun getFragmentShaderResId() = SHADOWMAP_FRAGMENT_SHADER_DEPTH_SUPPORT
     //override fun getGeometryShaderResId(): String? = SHADOWMAP_GEOMETRY_SHADER_DEPTH_SUPPORT
 
-    override fun bindGlobalParams(scene: GameScene) {}
-    override fun bindAdditionalParams(scene: GameScene, renderable: IDrawableItem) {
+    override fun bindGlobalParams(engine: GameEngine) {}
+    override fun bindLocalParams(scene: GameScene, renderable: IDrawableItem) {
         val isObjectGroup = renderable.instancedItem
         params[IS_OBJECT_GROUP_PARAM_NAME]?.value = if (isObjectGroup) 1 else 0
 

@@ -1,6 +1,7 @@
 package org.sadgames.engine.render.gl.material.shaders
 
 import com.kgl.opengl.*
+import org.sadgames.engine.GameEngine
 import org.sadgames.engine.scene.items.lights.DirectionalLight
 import org.sadgames.engine.render.GLParamType.FLOAT_ATTRIB_ARRAY_PARAM
 import org.sadgames.engine.render.*
@@ -33,8 +34,8 @@ abstract class VBOShaderProgram {
     protected abstract fun getVertexShaderResId(): String?
     protected abstract fun getFragmentShaderResId(): String?
 
-    abstract fun bindGlobalParams(scene: GameScene)
-    abstract fun bindAdditionalParams(scene: GameScene, renderable: IDrawableItem)
+    abstract fun bindGlobalParams(engine: GameEngine)
+    abstract fun bindLocalParams(scene: GameScene, renderable: IDrawableItem)
 
     protected open fun getGeometryShaderResId(): String? = null
 

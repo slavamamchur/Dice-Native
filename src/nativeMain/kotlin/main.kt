@@ -51,7 +51,7 @@ private object Game {
 				window.shouldClose = true
 			}
 
-			engine.drawScene()
+			engine.drawFrame()
 
 			window.swapBuffers()
 			Glfw.pollEvents()

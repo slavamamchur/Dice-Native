@@ -51,24 +51,21 @@ abstract class AbstractNode(number: Long = -1, name: String? = null, var parent:
 
     fun putChild(item: AbstractNode, name: String? = item.itemName, number: Long = childs.size.toLong()) {
         item.parent?.minusAssign(item.itemName)
-        item.itemName = name
+        item.itemName = name ?: item.itemName
         item.itemNumber = number
         item.parent = this
 
-        childs[name!!] = item
+        childs[item.itemName!!] = item
     }
 
-    fun proceesTreeItems(itemHandler: (item: AbstractNode?) -> Unit, condition: (item: AbstractNode?) -> Boolean) {
-        if (this is IDrawableItem) {
-            val sortedItems = ArrayList(childs.values)
-            sortedItems.sortWith(Comparator
-            { i1: AbstractNode, i2: AbstractNode -> (i1.itemNumber - i2.itemNumber).toInt() })
+    fun processTreeItems(itemHandler: (item: AbstractNode?) -> Unit, condition: (item: AbstractNode?) -> Boolean) {
+        val sortedItems = ArrayList(childs.values)
+        sortedItems.sortWith(Comparator { i1: AbstractNode, i2: AbstractNode -> (i1.itemNumber - i2.itemNumber).toInt() })
 
-            for (item in sortedItems)
-                if (item is IDrawableItem) {
-                    if (condition(item)) itemHandler(item)
-                    item.proceesTreeItems(itemHandler, condition)
-                }
+        for (item in sortedItems) {
+            if (condition(item))
+                itemHandler(item)
+            item.processTreeItems(itemHandler, condition)
         }
     }
 

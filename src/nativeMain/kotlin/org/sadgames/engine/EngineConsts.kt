@@ -22,7 +22,8 @@ enum class CacheItemType {
 
 enum class SceneItemType {
     ROOT_ITEM,
-    DRAWABLE_ITEM,
+    DRAWABLE_3D_ITEM,
+    DRAWABLE_GUI_ITEM,
     LIGHT_SOURCE_ITEM,
     CAMERA_ITEM
 }

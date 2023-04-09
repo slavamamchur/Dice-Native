@@ -10,6 +10,7 @@ import kotlinx.cinterop.refTo
 import org.sadgames.GLObjectType
 import org.sadgames.engine.CacheItemType.TEXTURE
 import org.sadgames.engine.GameEngine.Companion.gameCache
+import org.sadgames.engine.SceneItemType
 import org.sadgames.engine.render.ACTIVE_TEXTURE_SLOT_PARAM_NAME
 import org.sadgames.engine.render.TEXEL_UV_SIZE
 import org.sadgames.engine.render.VERTEX_SIZE
@@ -37,6 +38,7 @@ class Box2D(box: Vector4f,
 
     var background = gameCache[TEXTURE]?.get(textureId ?: "") as? AbstractTexture?
 
+    override val type; get() = SceneItemType.DRAWABLE_GUI_ITEM
     override val drawInRaysBuffer: Boolean; get() = false
     override val castShadow: Boolean; get() = false
     override val reflected: Boolean; get() = false
@@ -75,7 +77,7 @@ class Box2D(box: Vector4f,
     override fun createNormalsVBO() {}
     override fun createFacesIBO() {}
 
-    fun bind() {
+    override fun bind() {
         program.useProgram()
         bindObject()
         bindLocals()

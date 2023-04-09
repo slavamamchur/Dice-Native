@@ -16,8 +16,8 @@ open class GUIRendererProgram: ShadowMapProgram() {
     override fun getFragmentShaderResId() = GUI_FRAGMENT_SHADER
     override fun getGeometryShaderResId(): String? = null
 
-    override fun bindAdditionalParams(scene: GameScene, renderable: IDrawableItem) {
-        super.bindAdditionalParams(scene, renderable)
+    override fun bindLocalParams(scene: GameScene, renderable: IDrawableItem) {
+        super.bindLocalParams(scene, renderable)
 
         params[EFFECTS_PARAM_NAME]?.value = (renderable as? Box2D)?.effects
         params[TARGET_WIDTH_PARAM_NAME]?.value = 0

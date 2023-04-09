@@ -1,7 +1,6 @@
 package org.sadgames.engine.render.gl.models
 
 import com.kgl.opengl.*
-import io.ktor.utils.io.errors.*
 import org.sadgames.engine.SceneItemType
 import org.sadgames.engine.render.NORMALS_PARAM_NAME
 import org.sadgames.engine.render.TEXELS_PARAM_NAME
@@ -20,7 +19,7 @@ import kotlin.properties.Delegates.observable
 
 abstract class AbstractGlMesh(var program: VBOShaderProgram): AbstractNode(), IDrawableItem {
     override var id = glGenVertexArray()
-    override val type = SceneItemType.DRAWABLE_ITEM
+    override val type = SceneItemType.DRAWABLE_3D_ITEM
     override val transform = Matrix4f()
 
     override var rotationX: Float by observable(0f) {_, oldVal, newVal -> if (oldVal != newVal) updateTransform()}

@@ -16,8 +16,9 @@ import kotlin.math.sin
 import kotlin.properties.Delegates.observable
 
 open class DirectionalLight(lightPos: FloatArray, var lightColour: Vector3f, camera: AbstractCamera)
-    : AbstractNode(name = "Sun") {
+    : AbstractNode(name = GLOBAL_LIGHT) {
     companion object {
+        const val GLOBAL_LIGHT = "Sun"
         fun getPosByDirection(direction: Vector3f) = direction * (FAR_PLANE * 100f)
         fun getUpDirection(dir: Vector3f) = Vector3f(dir.x, (-dir.x * dir.x - dir.z * dir.z) / dir.y, dir.z)
         fun getRightDirection(dir: Vector3f, up: Vector3f) = up cross dir

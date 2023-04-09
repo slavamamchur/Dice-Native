@@ -36,6 +36,7 @@ interface IDrawableItem {
     //fun setMaterialProperties(material: MaterialPropertiesObject?) //todo: moveto -> 3DObject
     fun loadObject()
     fun loadFromObject(src: IDrawableItem)
+    fun bind()
     fun bindObject()
     fun bindLocals()
     fun render()

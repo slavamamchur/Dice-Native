@@ -2,19 +2,14 @@ package org.sadgames.engine.render.gl
 
 import com.kgl.opengl.*
 import org.sadgames.GLObjectType
-import org.sadgames.engine.CacheItemType
-import org.sadgames.engine.CacheItemType.TEXTURE
 import org.sadgames.engine.GameEngine
-import org.sadgames.engine.GameEngine.Companion.gameCache
 import org.sadgames.engine.render.IRenderer
 import org.sadgames.engine.render.gl.fbo.ColorBufferFBO
 import org.sadgames.engine.render.gl.fbo.DepthBufferFBO
 import org.sadgames.engine.render.gl.material.shaders.*
-import org.sadgames.engine.render.gl.material.textures.AbstractTexture
-import org.sadgames.engine.render.gl.models.Box2D
 import org.sadgames.engine.scene.GameScene
+import org.sadgames.engine.scene.items.IDrawableItem
 import org.sadgames.engine.utils.Color4f
-import org.sadgames.engine.utils.Vector4f
 
 class GLRenderer: IRenderer {
     companion object {
@@ -41,10 +36,6 @@ class GLRenderer: IRenderer {
     private var shadowMap: DepthBufferFBO? = null
     private var refractionMap: ColorBufferFBO? = null
 
-    private var screen = Box2D(Vector4f(-1f, 1f, 1f, -1f),
-                            false,
-                            textureId = "/home/slava/blm.jpg").also { it.loadObject() }
-
     init {
         glClearColor(0.1f, 0.2f, 0.3f, 1f)
         glEnable(GL_MULTISAMPLE)
@@ -68,6 +59,11 @@ class GLRenderer: IRenderer {
         mainFbo = ColorBufferFBO(width, height, Color4f(0.1f, 0.2f, 0.3f, 1f), isMultiSampled = true)
     }
 
+    private fun drawItem(item: IDrawableItem) {
+        item.bind()
+        item.render()
+    }
+
     override fun onDraw(scene: GameScene) {
         mainFbo?.bind()
 
@@ -76,8 +72,7 @@ class GLRenderer: IRenderer {
 
         glDisable(GL_DEPTH_TEST)
 
-        screen.bind()
-        screen.render()
+        scene.processTreeItems({ drawItem((it as IDrawableItem)) }) { it is IDrawableItem }
 
         mainFbo?.unbind()
         mainFbo?.blit(null)
@@ -90,8 +85,6 @@ class GLRenderer: IRenderer {
 
         shaderCache.forEach { it.value.deleteProgram() }
         shaderCache.clear()
-
-        screen.release()
     }
 
     override fun bindShadowMap(slot: UInt) = shadowMap?.fboTexture?.bind(slot)
