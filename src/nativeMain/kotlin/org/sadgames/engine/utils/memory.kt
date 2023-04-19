@@ -23,3 +23,5 @@ inline fun Memory.clone() = Memory(nativeHeap.allocArray(this.size), this.size).
 
 @OptIn(DangerousInternalIoApi::class)
 inline fun allocateBuffer(size: Long): Buffer = Buffer(Memory(nativeHeap.allocArray(size), size))
+@OptIn(DangerousInternalIoApi::class)
+fun allocateData(data: FloatArray) = allocateBuffer(data.memSize).also { it.writeFullyLittleEndian(data) }.memory

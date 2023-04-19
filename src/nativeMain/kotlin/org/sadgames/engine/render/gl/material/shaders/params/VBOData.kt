@@ -2,43 +2,36 @@ package org.sadgames.engine.render.gl.material.shaders.params
 
 import com.kgl.opengl.*
 import io.ktor.utils.io.bits.*
-import io.ktor.utils.io.core.*
-import io.ktor.utils.io.core.internal.*
-import kotlinx.cinterop.convert
 import kotlinx.cinterop.nativeHeap
+import kotlinx.cinterop.refTo
+import org.sadgames.engine.utils.memSize
 
-open class VBOData(val type: ElementType = ElementType.INDEX,
+open class VBOData(val type: UInt = GL_ELEMENT_ARRAY_BUFFER,
                    val size: Int = Short.SIZE_BYTES,
                    val stride: Int = 0,
-                   val pos: Int = 0,
-                   data: Memory) {
+                   val pos: Int = 0) {
 
-    companion object {
-        enum class ElementType { VERTEX, INDEX }
+    var handle = glGenBuffer(); private set
+    var data: Any? = null; protected set
 
-        val types: MutableMap<ElementType, UInt> = hashMapOf(ElementType.VERTEX to GL_ARRAY_BUFFER,
-            ElementType.INDEX to GL_ELEMENT_ARRAY_BUFFER)
+    inline fun bind() = glBindBuffer(type, handle)
+    inline fun unBind() = glBindBuffer(type, 0u)
+
+    open fun put(data: FloatArray) {
+        bind()
+        glBufferData(type, data.memSize, data.refTo(0), GL_STATIC_DRAW)
+        unBind()
+
+        this.data = data
     }
 
-    var vboPtr = glGenBuffer(); private set
+    fun release() {
+        unBind()
+        data = null
 
-    init {
-        writeData(data)
-        nativeHeap.free(data)
-    }
-
-    protected open fun writeData(data: Memory) {
-        val glType = types[type]!!
-
-        glBindBuffer(glType, vboPtr)
-        glBufferData(glType, data.size, data.pointer, GL_STATIC_DRAW)
-        glBindBuffer(glType, 0u)
-    }
-
-    open fun clear() {
-        if (vboPtr != 0u) {
-            glDeleteBuffer(vboPtr)
-            vboPtr = 0u
+        if (handle > 0u) {
+            glDeleteBuffer(handle)
+            handle = 0u
         }
     }
 }

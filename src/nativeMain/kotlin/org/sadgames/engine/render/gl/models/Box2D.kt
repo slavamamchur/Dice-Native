@@ -1,12 +1,9 @@
 package org.sadgames.engine.render.gl.models
 
+import com.kgl.opengl.GL_ARRAY_BUFFER
+import com.kgl.opengl.GL_ELEMENT_ARRAY_BUFFER
 import com.kgl.opengl.GL_TRIANGLE_STRIP
 import com.kgl.opengl.glDrawArrays
-import io.ktor.utils.io.bits.*
-import io.ktor.utils.io.core.*
-import io.ktor.utils.io.core.internal.*
-import kotlinx.cinterop.convert
-import kotlinx.cinterop.refTo
 import org.sadgames.GLObjectType
 import org.sadgames.engine.CacheItemType.TEXTURE
 import org.sadgames.engine.GameEngine.Companion.gameCache
@@ -16,20 +13,17 @@ import org.sadgames.engine.render.TEXEL_UV_SIZE
 import org.sadgames.engine.render.VERTEX_SIZE
 import org.sadgames.engine.render.gl.GLRenderer.Companion.createShader
 import org.sadgames.engine.render.gl.material.shaders.params.VBOData
-import org.sadgames.engine.render.gl.material.shaders.params.VBOData.Companion.ElementType
 import org.sadgames.engine.render.gl.material.textures.AbstractTexture
 import org.sadgames.engine.utils.Vector4f
-import org.sadgames.engine.utils.allocateBuffer
-import org.sadgames.engine.utils.memSize
+import org.sadgames.engine.utils.allocateData
 
 /**
  * Created by Slava Mamchur on 23.03.2023.
  */
 
 class Box2D(box: Vector4f,
-            val isReftectedY: Boolean,
-            var effects: Int = 0,
-            textureId: String? = null): AbstractGlMesh(createShader(GLObjectType.GUI_OBJECT)) {
+            textureId: String? = null,
+            var effects: Int = 0): AbstractGlMesh(createShader(GLObjectType.GUI_OBJECT)) {
 
     private val left = box.x
     private val top = box.y
@@ -46,7 +40,6 @@ class Box2D(box: Vector4f,
 
     override fun render() = glDrawArrays(GL_TRIANGLE_STRIP, 0, facesCount)
 
-    @OptIn(DangerousInternalIoApi::class)
     override fun createVertexesVBO() {
         val vertexes = floatArrayOf(
             left, top, 0.0f,
@@ -55,23 +48,18 @@ class Box2D(box: Vector4f,
             right, bottom, 0.0f
         )
 
-        vertexesVBO = VBOData(ElementType.VERTEX, VERTEX_SIZE, 0, 0,
-                              allocateBuffer(vertexes.memSize)
-                              .also { it.writeFullyLittleEndian(vertexes) }.memory)
+        vertexesVBO = VBOData(GL_ARRAY_BUFFER, VERTEX_SIZE, 0, 0).also { it.put(vertexes) }
     }
 
-    @OptIn(DangerousInternalIoApi::class)
     override fun createTexelsVBO() {
         val uvs = floatArrayOf(
-            0.0f, 1.0f - if (isReftectedY) 1 else 0,
-            0.0f, 0.0f + if (isReftectedY) 1 else 0,
-            1.0f, 1.0f - if (isReftectedY) 1 else 0,
-            1.0f, 0.0f + if (isReftectedY) 1 else 0
+            0.0f, 1.0f,
+            0.0f, 0.0f,
+            1.0f, 1.0f,
+            1.0f, 0.0f
         )
 
-        texelsVBO = VBOData(ElementType.VERTEX, TEXEL_UV_SIZE, 0, 0,
-                            allocateBuffer(uvs.memSize)
-                            .also { it.writeFullyLittleEndian(uvs) }.memory)
+        texelsVBO = VBOData(GL_ARRAY_BUFFER, TEXEL_UV_SIZE, 0, 0).also { it.put(uvs) }
     }
 
     override fun createNormalsVBO() {}

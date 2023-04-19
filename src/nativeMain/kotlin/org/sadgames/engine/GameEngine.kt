@@ -49,8 +49,7 @@ class GameEngine(window: Window, val renderer: IRenderer) {
     //todo: show splash, load, hide splash
     private suspend fun loadScene() = withContext(Dispatchers.Default) {
         scene.putChild(Box2D(Vector4f(-1f, 1f, 1f, -1f),
-                            false,
-                             textureId = "/home/slava/blm.jpg").also { it.loadObject() })
+                             "/home/slava/blm.jpg").also { it.loadObject() })
     }
 
     fun drawFrame() { renderer.onDraw(scene) }
@@ -64,7 +63,6 @@ class GameEngine(window: Window, val renderer: IRenderer) {
         scene.processTreeItems({ (it as? IDrawableItem)?.release() }) { true }
         scene.childs.clear()
 
-        TextureCache.clearCache()
-        gameCache.clear()
+        gameCache.values.forEach { it.clearCache() }
     }
 }

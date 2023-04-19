@@ -43,7 +43,7 @@ abstract class AbstractGlMesh(var program: VBOShaderProgram): AbstractNode(), ID
         if (normalsVBO != null)
             program.params[NORMALS_PARAM_NAME]?.value = normalsVBO
         if (facesIBO != null) {
-            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, facesIBO!!.vboPtr)
+            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, facesIBO!!.handle)
             glBindVertexArray(0u)
         }
     }
@@ -95,7 +95,7 @@ abstract class AbstractGlMesh(var program: VBOShaderProgram): AbstractNode(), ID
     protected abstract fun createTexelsVBO()
     protected abstract fun createNormalsVBO()
     protected abstract fun createFacesIBO()
-    protected open fun clearVBOPtr(param: VBOData?) = param?.clear()
+    protected open fun clearVBOPtr(param: VBOData?) = param?.release()
 
     protected  abstract val facesCount: Int
 }

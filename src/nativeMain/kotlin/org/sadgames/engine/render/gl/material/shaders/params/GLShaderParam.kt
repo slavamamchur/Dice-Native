@@ -1,9 +1,7 @@
 package org.sadgames.engine.render.gl.material.shaders.params
 
 import com.kgl.opengl.*
-import kotlinx.cinterop.CPointed
 import kotlinx.cinterop.refTo
-import kotlinx.cinterop.toCPointer
 import org.sadgames.engine.render.GLParamType
 import org.sadgames.engine.render.GLParamType.*
 import org.sadgames.engine.utils.Vector3f
@@ -25,10 +23,7 @@ open class GLShaderParam(protected val paramType: GLParamType, val paramName: St
                             throw IllegalStateException("Unexpected value: $paramType")
 
                     FLOAT_UNIFORM_VECTOR_PARAM, FLOAT_UNIFORM_VECTOR4_PARAM, FLOAT_UNIFORM_MATRIX_PARAM ->
-                        if (value is Vector3f)
-                            setParamValue(value.toArray())
-                        else
-                            setParamValue(value as FloatArray)
+                            setParamValue(if (value is Vector3f) value.toArray() else value as FloatArray)
 
                     FLOAT_UNIFORM_PARAM -> setParamValue(value as Float)
 
@@ -42,28 +37,11 @@ open class GLShaderParam(protected val paramType: GLParamType, val paramName: St
             else
                 glGetUniformLocation(programId, paramName)
 
-    var size = 0; private set
-    var stride = 0; private set
-    var pos = 0; private set
-    var vboPtr = 0u; private set
-
-    protected open fun internalLinkParamValue() {
-        glBindBuffer(GL_ARRAY_BUFFER, vboPtr)
+    protected open fun setParamValue(value: VBOData) {
+        glBindBuffer(GL_ARRAY_BUFFER, value.handle)
         glEnableVertexAttribArray(paramReference.toUInt())
-        glVertexAttribPointer(paramReference.toUInt(), size, GL_FLOAT, false, stride, pos.toPtr())
+        glVertexAttribPointer(paramReference.toUInt(), value.size, GL_FLOAT, false, value.stride, value.pos.toPtr())
         glBindBuffer(GL_ARRAY_BUFFER, 0u)
-    }
-
-    @Throws(IllegalArgumentException::class)
-    private fun setParamValue(value: VBOData) {
-        require(paramType == FLOAT_ATTRIB_ARRAY_PARAM)
-
-        this.size = value.size
-        this.stride = value.stride
-        this.pos = value.pos
-        this.vboPtr = value.vboPtr
-
-        internalLinkParamValue()
     }
 
     @Throws(IllegalArgumentException::class)
@@ -78,19 +56,8 @@ open class GLShaderParam(protected val paramType: GLParamType, val paramName: St
             throw IllegalArgumentException()
     }
 
-    @Throws(IllegalArgumentException::class)
-    private fun setParamValue(data: Int) {
-        if (paramType == INTEGER_UNIFORM_PARAM)
-            glUniform1i(paramReference, data)
-        else
-            throw IllegalArgumentException()
-    }
+    private inline fun setParamValue(data: Int) = glUniform1i(paramReference, data)
 
-    private fun setParamValue(data: Float) {
-        if (paramType == FLOAT_UNIFORM_PARAM && paramReference >= 0)
-            glUniform1f(paramReference, data)
-        //else
-            //throw IllegalArgumentException()
-    }
+    private inline fun setParamValue(data: Float) = glUniform1f(paramReference, data)
 
 }
