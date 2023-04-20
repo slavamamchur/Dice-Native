@@ -1,7 +1,6 @@
 package org.sadgames.engine.render.gl.models
 
 import com.kgl.opengl.*
-import org.sadgames.engine.SceneItemType
 import org.sadgames.engine.render.NORMALS_PARAM_NAME
 import org.sadgames.engine.render.TEXELS_PARAM_NAME
 import org.sadgames.engine.render.VERTEXES_PARAM_NAME
@@ -12,6 +11,7 @@ import org.sadgames.engine.scene.items.IDrawableItem
 import org.sadgames.engine.utils.Matrix4f
 import org.sadgames.engine.utils.Vector3f
 import kotlin.properties.Delegates.observable
+import kotlin.reflect.KProperty
 
 /**
  * Created by Slava Mamchur on 20.03.2023.
@@ -19,14 +19,11 @@ import kotlin.properties.Delegates.observable
 
 abstract class AbstractGlMesh(var program: VBOShaderProgram): AbstractNode(), IDrawableItem {
     override var id = glGenVertexArray()
-    override val type = SceneItemType.DRAWABLE_3D_ITEM
     override val transform = Matrix4f()
-
-    override var rotationX: Float by observable(0f) {_, oldVal, newVal -> if (oldVal != newVal) updateTransform()}
-    override var rotationY: Float by observable(0f) {_, oldVal, newVal -> if (oldVal != newVal) updateTransform()}
-    override var rotationZ: Float by observable(0f) {_, oldVal, newVal -> if (oldVal != newVal) updateTransform()}
-    override var scaleFactor: Float by observable(0f) {_, oldVal, newVal -> if (oldVal != newVal) updateTransform()}
-
+    override var rotationX: Float by observable(0f, ::onChange)
+    override var rotationY: Float by observable(0f, ::onChange)
+    override var rotationZ: Float by observable(0f, ::onChange)
+    override var scaleFactor: Float by observable(0f, ::onChange)
     override var position: Vector3f by observable(Vector3f(0f)) {_, oldVal, newVal -> if (oldVal != newVal) updateTransform()}
 
     override fun loadObject() {
@@ -64,7 +61,10 @@ abstract class AbstractGlMesh(var program: VBOShaderProgram): AbstractNode(), ID
             throw IllegalArgumentException("Invalid AbstractGlMesh")
     }
 
-    override fun bindObject() = glBindVertexArray(id)
+    override fun bind() {
+        program.useProgram()
+        glBindVertexArray(id)
+    }
 
     override fun render() {
         if (facesIBO == null)
@@ -98,4 +98,9 @@ abstract class AbstractGlMesh(var program: VBOShaderProgram): AbstractNode(), ID
     protected open fun clearVBOPtr(param: VBOData?) = param?.release()
 
     protected  abstract val facesCount: Int
+
+    private fun onChange(@Suppress("UNUSED_PARAMETER") prop: KProperty<*>, oldVal: Float, newVal: Float) {
+        if (oldVal != newVal)
+            updateTransform()
+    }
 }

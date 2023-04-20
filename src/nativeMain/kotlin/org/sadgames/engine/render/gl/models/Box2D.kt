@@ -1,9 +1,6 @@
 package org.sadgames.engine.render.gl.models
 
-import com.kgl.opengl.GL_ARRAY_BUFFER
-import com.kgl.opengl.GL_ELEMENT_ARRAY_BUFFER
-import com.kgl.opengl.GL_TRIANGLE_STRIP
-import com.kgl.opengl.glDrawArrays
+import com.kgl.opengl.*
 import org.sadgames.GLObjectType
 import org.sadgames.engine.CacheItemType.TEXTURE
 import org.sadgames.engine.GameEngine.Companion.gameCache
@@ -13,6 +10,8 @@ import org.sadgames.engine.render.TEXEL_UV_SIZE
 import org.sadgames.engine.render.VERTEX_SIZE
 import org.sadgames.engine.render.gl.GLRenderer.Companion.createShader
 import org.sadgames.engine.render.gl.material.shaders.params.VBOData
+import org.sadgames.engine.render.gl.material.shaders.params.VBOElement
+import org.sadgames.engine.render.gl.material.shaders.params.VBOElement.*
 import org.sadgames.engine.render.gl.material.textures.AbstractTexture
 import org.sadgames.engine.utils.Vector4f
 import org.sadgames.engine.utils.allocateData
@@ -42,39 +41,24 @@ class Box2D(box: Vector4f,
 
     override fun createVertexesVBO() {
         val vertexes = floatArrayOf(
-            left, top, 0.0f,
-            left, bottom, 0.0f,
-            right, top, 0.0f,
-            right, bottom, 0.0f
+            left, top,
+            left, bottom,
+            right, top,
+            right, bottom
         )
 
-        vertexesVBO = VBOData(GL_ARRAY_BUFFER, VERTEX_SIZE, 0, 0).also { it.put(vertexes) }
+        vertexesVBO = VBOData(V2D).also { it.put(vertexes) }
     }
 
-    override fun createTexelsVBO() {
-        val uvs = floatArrayOf(
-            0.0f, 1.0f,
-            0.0f, 0.0f,
-            1.0f, 1.0f,
-            1.0f, 0.0f
-        )
-
-        texelsVBO = VBOData(GL_ARRAY_BUFFER, TEXEL_UV_SIZE, 0, 0).also { it.put(uvs) }
-    }
-
+    override fun createTexelsVBO() {}
     override fun createNormalsVBO() {}
     override fun createFacesIBO() {}
 
     override fun bind() {
-        program.useProgram()
-        bindObject()
-        bindLocals()
-    }
+        super.bind()
 
-    override fun bindLocals() {
-        val param = program.params[ACTIVE_TEXTURE_SLOT_PARAM_NAME] //todo: move reference check into paramByName() code
-
-        if (background != null && param != null && param.paramReference >= 0)
+        val param = program.params[ACTIVE_TEXTURE_SLOT_PARAM_NAME]
+        if (background != null && param != null)
             param.value = background!!.bind(0u)
     }
 

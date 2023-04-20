@@ -37,8 +37,6 @@ interface IDrawableItem {
     fun loadObject()
     fun loadFromObject(src: IDrawableItem)
     fun bind()
-    fun bindObject()
-    fun bindLocals()
     fun render()
     fun release()
 }

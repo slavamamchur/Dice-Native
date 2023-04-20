@@ -1,25 +1,21 @@
 package org.sadgames.engine.render.gl.material.shaders.params
 
 import com.kgl.opengl.*
-import io.ktor.utils.io.bits.*
-import kotlinx.cinterop.nativeHeap
-import kotlinx.cinterop.refTo
-import org.sadgames.engine.utils.memSize
+import kotlinx.cinterop.CValuesRef
+import org.sadgames.engine.utils.toPtr
 
-open class VBOData(val type: UInt = GL_ELEMENT_ARRAY_BUFFER,
-                   val size: Int = Short.SIZE_BYTES,
-                   val stride: Int = 0,
-                   val pos: Int = 0) {
-
+class VBOData(val element: VBOElement, val stride: Int = 0, pos: Int = 0) {
     var handle = glGenBuffer(); private set
     var data: Any? = null; protected set
+    val pointer: CValuesRef<*>? = pos.toPtr()
 
-    inline fun bind() = glBindBuffer(type, handle)
-    inline fun unBind() = glBindBuffer(type, 0u)
+    inline fun bind() = glBindBuffer(element.type, handle)
+    inline fun unBind() = glBindBuffer(element.type, 0u)
 
-    open fun put(data: FloatArray) {
+    fun put(data: Any) {
         bind()
-        glBufferData(type, data.memSize, data.refTo(0), GL_STATIC_DRAW)
+        val (size, reference) = element.getDataRef(data)
+        glBufferData(element.type, size, reference, GL_STATIC_DRAW)
         unBind()
 
         this.data = data

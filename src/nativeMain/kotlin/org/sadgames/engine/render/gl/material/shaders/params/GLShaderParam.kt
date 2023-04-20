@@ -8,13 +8,11 @@ import org.sadgames.engine.utils.Vector3f
 import org.sadgames.engine.utils.toArray
 import org.sadgames.engine.utils.toPtr
 
-open class GLShaderParam(protected val paramType: GLParamType, val paramName: String, programId: UInt) {
+open class GLShaderParam(protected val paramType: GLParamType, paramName: String, programId: UInt) {
 
     var value: Any? = null
         set(value) {
-            field = value
-
-            if (paramReference >= 0)
+            if (paramReference >= 0) {
                 when (paramType) {
                     FLOAT_ATTRIB_ARRAY_PARAM ->
                         if (value is VBOData)
@@ -23,12 +21,15 @@ open class GLShaderParam(protected val paramType: GLParamType, val paramName: St
                             throw IllegalStateException("Unexpected value: $paramType")
 
                     FLOAT_UNIFORM_VECTOR_PARAM, FLOAT_UNIFORM_VECTOR4_PARAM, FLOAT_UNIFORM_MATRIX_PARAM ->
-                            setParamValue(if (value is Vector3f) value.toArray() else value as FloatArray)
+                        setParamValue((value as? Vector3f)?.toArray() ?: value as FloatArray)
 
                     FLOAT_UNIFORM_PARAM -> setParamValue(value as Float)
 
                     INTEGER_UNIFORM_PARAM -> setParamValue(value as Int)
                 }
+
+                field = value
+            }
         }
 
     val paramReference =
@@ -38,10 +39,10 @@ open class GLShaderParam(protected val paramType: GLParamType, val paramName: St
                 glGetUniformLocation(programId, paramName)
 
     protected open fun setParamValue(value: VBOData) {
-        glBindBuffer(GL_ARRAY_BUFFER, value.handle)
+        value.bind()
         glEnableVertexAttribArray(paramReference.toUInt())
-        glVertexAttribPointer(paramReference.toUInt(), value.size, GL_FLOAT, false, value.stride, value.pos.toPtr())
-        glBindBuffer(GL_ARRAY_BUFFER, 0u)
+        glVertexAttribPointer(paramReference.toUInt(), value.element.size, GL_FLOAT, false, value.stride, value.pointer)
+        value.unBind()
     }
 
     @Throws(IllegalArgumentException::class)
