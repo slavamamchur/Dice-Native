@@ -15,9 +15,13 @@ enum class VBOElement(val type: UInt, val size: Int) {
     V3D(GL_ARRAY_BUFFER, 3),
     IDX(GL_ELEMENT_ARRAY_BUFFER, 1);
 
-    fun getDataRef(data: Any): Pair<Long, CValuesRef<*>> { //todo: add index support
-        val value = data as FloatArray
-
-        return Pair(value.memSize, value.refTo(0))
-    }
+    fun getDataRef(data: Any): Pair<Long, CValuesRef<*>> =
+        if (type == GL_ARRAY_BUFFER) {
+            val value = data as FloatArray
+            Pair(value.memSize, value.refTo(0))
+        }
+        else {
+            val value = data as ShortArray
+            Pair(value.memSize, value.refTo(0))
+        }
 }

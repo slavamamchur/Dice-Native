@@ -11,10 +11,6 @@ import org.sadgames.engine.utils.Vector4f
 interface IDrawableItem {
     val id: UInt
     val transform: Matrix4f
-
-    val castShadow: Boolean; get() = true
-    val reflected: Boolean; get() = true
-    val drawInRaysBuffer: Boolean; get() = true
     val instancedItem: Boolean; get() = false
 
     var position: Vector3f

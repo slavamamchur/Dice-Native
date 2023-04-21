@@ -15,6 +15,7 @@ inline val UIntArray.ptr; get() = this.refTo(0).getPointer(MemScope())
 inline val ByteArray.ptr; get() = this.refTo(0).getPointer(MemScope())
 inline val FloatArray.ptr; get() = this.refTo(0).getPointer(MemScope())
 inline val FloatArray.memSize; get() = (this.size * Float.SIZE_BYTES).toLong()
+inline val ShortArray.memSize; get() = (this.size * Short.SIZE_BYTES).toLong()
 
 @OptIn(DangerousInternalIoApi::class)
 inline fun Memory.clone() = Memory(nativeHeap.allocArray(this.size), this.size).also {

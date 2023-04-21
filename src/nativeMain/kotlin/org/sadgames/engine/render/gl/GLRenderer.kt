@@ -72,7 +72,6 @@ class GLRenderer: IRenderer {
 
         glDisable(GL_DEPTH_TEST)
 
-        //todo: use effects for 2d-box, calculate texture coord`s in shader code ???
         scene.processTreeItems({ drawItem((it as IDrawableItem)) }) { it is IDrawableItem }
 
         mainFbo?.unbind()

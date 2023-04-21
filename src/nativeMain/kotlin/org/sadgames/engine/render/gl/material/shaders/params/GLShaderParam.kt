@@ -6,13 +6,13 @@ import org.sadgames.engine.render.GLParamType
 import org.sadgames.engine.render.GLParamType.*
 import org.sadgames.engine.utils.Vector3f
 import org.sadgames.engine.utils.toArray
-import org.sadgames.engine.utils.toPtr
 
+@Suppress("MemberVisibilityCanBePrivate")
 open class GLShaderParam(protected val paramType: GLParamType, paramName: String, programId: UInt) {
 
     var value: Any? = null
         set(value) {
-            if (paramReference >= 0) {
+            if (paramReference >= 0 && value != null) {
                 when (paramType) {
                     FLOAT_ATTRIB_ARRAY_PARAM ->
                         if (value is VBOData)

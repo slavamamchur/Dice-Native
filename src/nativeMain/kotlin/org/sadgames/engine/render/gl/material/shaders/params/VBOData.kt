@@ -6,7 +6,7 @@ import org.sadgames.engine.utils.toPtr
 
 class VBOData(val element: VBOElement, val stride: Int = 0, pos: Int = 0) {
     var handle = glGenBuffer(); private set
-    var data: Any? = null; protected set
+    var data: Any? = null; private set
     val pointer: CValuesRef<*>? = pos.toPtr()
 
     inline fun bind() = glBindBuffer(element.type, handle)
@@ -21,13 +21,24 @@ class VBOData(val element: VBOElement, val stride: Int = 0, pos: Int = 0) {
         this.data = data
     }
 
-    fun release() {
-        unBind()
-        data = null
-
+    fun clear() {
         if (handle > 0u) {
+            unBind()
             glDeleteBuffer(handle)
             handle = 0u
         }
+    }
+
+    fun reload() {
+        if (data != null) {
+            clear()
+            handle = glGenBuffer()
+            put(data!!)
+        }
+    }
+
+    fun release() {
+        clear()
+        data = null
     }
 }

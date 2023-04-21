@@ -24,7 +24,7 @@ abstract class AbstractGlMesh(var program: VBOShaderProgram): AbstractNode(), ID
     override var rotationY: Float by observable(0f, ::onChange)
     override var rotationZ: Float by observable(0f, ::onChange)
     override var scaleFactor: Float by observable(0f, ::onChange)
-    override var position: Vector3f by observable(Vector3f(0f)) {_, oldVal, newVal -> if (oldVal != newVal) updateTransform()}
+    override var position: Vector3f by observable(Vector3f(0f), ::onChange)
 
     override fun loadObject() {
         glBindVertexArray(id)
@@ -48,13 +48,13 @@ abstract class AbstractGlMesh(var program: VBOShaderProgram): AbstractNode(), ID
     override fun loadFromObject(src: IDrawableItem) {
         if (src is AbstractGlMesh) {
             id = src.id
-            clearVBOPtr(vertexesVBO)
+            clearVBO(vertexesVBO)
             vertexesVBO = src.vertexesVBO
-            clearVBOPtr(texelsVBO)
+            clearVBO(texelsVBO)
             texelsVBO = src.texelsVBO
-            clearVBOPtr(normalsVBO)
+            clearVBO(normalsVBO)
             normalsVBO = src.normalsVBO
-            clearVBOPtr(facesIBO)
+            clearVBO(facesIBO)
             facesIBO = src.facesIBO
         }
         else
@@ -74,13 +74,13 @@ abstract class AbstractGlMesh(var program: VBOShaderProgram): AbstractNode(), ID
     }
 
     override fun release() {
-        clearVBOPtr(vertexesVBO)
+        clearVBO(vertexesVBO)
         vertexesVBO = null
-        clearVBOPtr(texelsVBO)
+        clearVBO(texelsVBO)
         texelsVBO = null
-        clearVBOPtr(normalsVBO)
+        clearVBO(normalsVBO)
         normalsVBO = null
-        clearVBOPtr(facesIBO)
+        clearVBO(facesIBO)
         facesIBO = null
 
         glDeleteVertexArray(id)
@@ -92,14 +92,19 @@ abstract class AbstractGlMesh(var program: VBOShaderProgram): AbstractNode(), ID
     var facesIBO: VBOData? = null; protected set
 
     protected abstract fun createVertexesVBO()
-    protected abstract fun createTexelsVBO()
-    protected abstract fun createNormalsVBO()
-    protected abstract fun createFacesIBO()
-    protected open fun clearVBOPtr(param: VBOData?) = param?.release()
+    protected open fun createTexelsVBO() {}
+    protected open fun createNormalsVBO() {}
+    protected open fun createFacesIBO() {}
+    protected inline fun clearVBO(param: VBOData?) = param?.release()
 
-    protected  abstract val facesCount: Int
+    protected abstract val facesCount: Int
 
     private fun onChange(@Suppress("UNUSED_PARAMETER") prop: KProperty<*>, oldVal: Float, newVal: Float) {
+        if (oldVal != newVal)
+            updateTransform()
+    }
+
+    private fun onChange(@Suppress("UNUSED_PARAMETER") prop: KProperty<*>, oldVal: Vector3f, newVal: Vector3f) {
         if (oldVal != newVal)
             updateTransform()
     }
