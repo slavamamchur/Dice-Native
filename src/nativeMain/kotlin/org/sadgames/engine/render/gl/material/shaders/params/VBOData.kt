@@ -4,7 +4,7 @@ import com.kgl.opengl.*
 import kotlinx.cinterop.CValuesRef
 import org.sadgames.engine.utils.toPtr
 
-class VBOData(val element: VBOElement, val stride: Int = 0, pos: Int = 0) {
+class VBOData(val element: VBOElement<*>, val stride: Int = 0, pos: Int = 0) {
     var handle = glGenBuffer(); private set
     var data: Any? = null; private set
     val pointer: CValuesRef<*>? = pos.toPtr()
@@ -14,8 +14,7 @@ class VBOData(val element: VBOElement, val stride: Int = 0, pos: Int = 0) {
 
     fun put(data: Any) {
         bind()
-        val (size, reference) = element.getDataRef(data)
-        glBufferData(element.type, size, reference, GL_STATIC_DRAW)
+        element.put(data)
         unBind()
 
         this.data = data

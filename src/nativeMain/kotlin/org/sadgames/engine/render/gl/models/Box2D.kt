@@ -8,8 +8,8 @@ import org.sadgames.engine.GameEngine.Companion.gameCache
 import org.sadgames.engine.SceneItemType
 import org.sadgames.engine.render.ACTIVE_TEXTURE_SLOT_PARAM_NAME
 import org.sadgames.engine.render.gl.GLRenderer.Companion.createShader
+import org.sadgames.engine.render.gl.material.shaders.params.V2D
 import org.sadgames.engine.render.gl.material.shaders.params.VBOData
-import org.sadgames.engine.render.gl.material.shaders.params.VBOElement.V2D
 import org.sadgames.engine.render.gl.material.textures.AbstractTexture
 import org.sadgames.engine.utils.Vector4f
 

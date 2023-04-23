@@ -1,27 +1,15 @@
 package org.sadgames.engine.render.gl.material.shaders.params
 
-import com.kgl.opengl.GL_ARRAY_BUFFER
-import com.kgl.opengl.GL_ELEMENT_ARRAY_BUFFER
+import com.kgl.opengl.GL_STATIC_DRAW
+import com.kgl.opengl.glBufferData
 import kotlinx.cinterop.CValuesRef
-import kotlinx.cinterop.refTo
-import org.sadgames.engine.utils.memSize
 
-/**
- * Created by Slava Mamchur on 17.04.2023.
- */
+abstract class VBOElement<T>(val type: UInt, val size: Int) {
+    abstract fun getDataRef(data: T): Pair<Long, CValuesRef<*>>
 
-enum class VBOElement(val type: UInt, val size: Int) {
-    V2D(GL_ARRAY_BUFFER, 2),
-    V3D(GL_ARRAY_BUFFER, 3),
-    IDX(GL_ELEMENT_ARRAY_BUFFER, 1);
-
-    fun getDataRef(data: Any): Pair<Long, CValuesRef<*>> =
-        if (type == GL_ARRAY_BUFFER) {
-            val value = data as FloatArray
-            Pair(value.memSize, value.refTo(0))
-        }
-        else {
-            val value = data as ShortArray
-            Pair(value.memSize, value.refTo(0))
-        }
+    @Suppress("UNCHECKED_CAST")
+    fun put(data: Any) {
+        val (size, reference) = getDataRef(data as T)
+        glBufferData(type, size, reference, GL_STATIC_DRAW)
+    }
 }
