@@ -6,7 +6,6 @@ import org.sadgames.GLObjectType.GUI_OBJECT
 import org.sadgames.engine.CacheItemType.TEXTURE
 import org.sadgames.engine.GameEngine.Companion.gameCache
 import org.sadgames.engine.SceneItemType
-import org.sadgames.engine.render.ACTIVE_TEXTURE_SLOT_PARAM_NAME
 import org.sadgames.engine.render.gl.GLRenderer.Companion.createShader
 import org.sadgames.engine.render.gl.material.shaders.params.V2D
 import org.sadgames.engine.render.gl.material.shaders.params.VBOData
@@ -30,11 +29,6 @@ class Box2D(val box: Vector4f, textureId: String? = null, var effects: Int = 0):
         )
 
         vertexesVBO = VBOData(V2D).also { it.put(vertexes) }
-    }
-
-    override fun bind() {
-        super.bind()
-        program.params[ACTIVE_TEXTURE_SLOT_PARAM_NAME]?.value = background?.bind(0u)
     }
 
     override fun release() {

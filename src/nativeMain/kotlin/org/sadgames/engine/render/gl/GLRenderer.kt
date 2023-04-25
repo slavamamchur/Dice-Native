@@ -2,11 +2,13 @@ package org.sadgames.engine.render.gl
 
 import com.kgl.opengl.*
 import org.sadgames.GLObjectType
+import org.sadgames.GLObjectType.*
 import org.sadgames.engine.GameEngine
 import org.sadgames.engine.render.IRenderer
 import org.sadgames.engine.render.gl.fbo.ColorBufferFBO
 import org.sadgames.engine.render.gl.fbo.DepthBufferFBO
 import org.sadgames.engine.render.gl.material.shaders.*
+import org.sadgames.engine.render.gl.models.AbstractGlMesh
 import org.sadgames.engine.scene.GameScene
 import org.sadgames.engine.scene.items.IDrawableItem
 import org.sadgames.engine.utils.Color4f
@@ -15,11 +17,11 @@ class GLRenderer: IRenderer {
     companion object {
         private val shaderCache: MutableMap<GLObjectType, VBOShaderProgram> = hashMapOf()
         fun createShader(type: GLObjectType) = shaderCache[type] ?:  (when (type) {
-                GLObjectType.TERRAIN_OBJECT_32 -> ImprovedTerrainRenderer()
+                TERRAIN_OBJECT_32 -> ImprovedTerrainRenderer()
                 //GLObjectType.WATER_OBJECT -> WaterRendererProgram()
                 //GLObjectType.GEN_TERRAIN_OBJECT -> GenTerrainProgram()
-                GLObjectType.SHADOW_MAP_OBJECT -> ShadowMapProgram()
-                GLObjectType.GUI_OBJECT -> GUIRendererProgram()
+                SHADOW_MAP_OBJECT -> ShadowMapProgram()
+                GUI_OBJECT -> GUIRendererProgram()
                 //GLObjectType.SKY_BOX_OBJECT -> SkyBoxProgram()
                 //GLObjectType.SKY_DOME_OBJECT -> SkyDomeProgram()
                 //GLObjectType.SUN_OBJECT -> SunRendererProgram()
@@ -59,8 +61,9 @@ class GLRenderer: IRenderer {
         mainFbo = ColorBufferFBO(width, height, Color4f(0.1f, 0.2f, 0.3f, 1f), isMultiSampled = true)
     }
 
-    private fun drawItem(item: IDrawableItem) {
+    private fun drawItem(scene: GameScene, item: AbstractGlMesh) {
         item.bind()
+        item.program.bindLocalParams(scene, item)
         item.render()
     }
 
@@ -72,7 +75,7 @@ class GLRenderer: IRenderer {
 
         glDisable(GL_DEPTH_TEST)
 
-        scene.processTreeItems({ drawItem((it as IDrawableItem)) }) { it is IDrawableItem }
+        scene.processTreeItems({ drawItem(scene, it as AbstractGlMesh) }) { it is IDrawableItem }
 
         mainFbo?.unbind()
         mainFbo?.blit(null)
@@ -83,7 +86,7 @@ class GLRenderer: IRenderer {
         shadowMap?.cleanUp()
         refractionMap?.cleanUp()
 
-        shaderCache.forEach { it.value.deleteProgram() }
+        shaderCache.forEach { it.value.release() }
         shaderCache.clear()
     }
 

@@ -20,39 +20,39 @@ abstract class VBOShaderProgram {
             0.5f, 0.5f, 0.5f, 1.0f)
     }
 
-    val params: MutableMap<String, GLShaderParam?> = HashMap()
-    private val shaderProgram = getShaderProgram()
+              val params: MutableMap<String, GLShaderParam?> = HashMap()
+    private   val shader = createNativeShader()
 
     init {
-        if (shaderProgram.isCompiled) {
+        if (shader.isCompiled) {
             createParams()
         } else {
-            throw RuntimeException(shaderProgram.log)
+            throw RuntimeException(shader.log)
         }
     }
 
     protected abstract fun getVertexShaderResId(): String?
     protected abstract fun getFragmentShaderResId(): String?
 
-    abstract fun bindGlobalParams(engine: GameEngine)
-    abstract fun bindLocalParams(scene: GameScene, renderable: IDrawableItem)
+    open fun bindGlobalParams(engine: GameEngine) {}
+    open fun bindLocalParams(scene: GameScene, renderable: IDrawableItem) {
+        scene.activeCamera?.let { bindMVPMatrix(renderable, Matrix4f(it.viewMatrix), Matrix4f(it.projectionMatrix)) }
+        getAdditionalParams(scene, renderable)?.forEach { params[it.key]?.value = it.value }
+    }
 
     protected open fun getGeometryShaderResId(): String? = null
 
-    protected open fun getShaderProgram() = MyShaderProgram(
-        if (getGeometryShaderResId()?.isNotEmpty() == true)
+    private fun createNativeShader() = MyShaderProgram(
                         hashMapOf(
                         GL_VERTEX_SHADER to  getVertexShaderResId()!!,
-                        GL_GEOMETRY_SHADER to getGeometryShaderResId()!!,
-                        GL_FRAGMENT_SHADER to getFragmentShaderResId()!!)
-        else
-            hashMapOf(
-                GL_VERTEX_SHADER to  getVertexShaderResId()!!,
-                GL_FRAGMENT_SHADER to getFragmentShaderResId()!!)
+                        GL_FRAGMENT_SHADER to getFragmentShaderResId()!!).also {
+                            if (getGeometryShaderResId()?.isNotEmpty() == true)
+                                it[GL_GEOMETRY_SHADER] = getGeometryShaderResId()!!
+                        }
     )
 
-    fun useProgram() = shaderProgram.begin()
-    fun deleteProgram() = shaderProgram.dispose()
+    fun bind() = shader.begin()
+    fun release() = shader.dispose()
 
     private fun createParams() {
         params.clear()
@@ -61,17 +61,17 @@ abstract class VBOShaderProgram {
     }
 
     protected open fun createAttributes() {
-        shaderProgram.attributeNames.forEach {
+        shader.attributeNames.forEach {
             params[it] = if(it == OFFSETS_PARAM_NAME)
-                                GLInstancedShaderParam(it, shaderProgram.programId)
+                                GLInstancedShaderParam(it, shader.programId)
                             else
-                                GLShaderParam(FLOAT_ATTRIB_ARRAY_PARAM, it, shaderProgram.programId)
+                                GLShaderParam(FLOAT_ATTRIB_ARRAY_PARAM, it, shader.programId)
         }
     }
 
     protected open fun createUniforms() {
-        shaderProgram.uniformTypes.forEach {
-            params[it.key] = GLShaderParam(GL_PARAM_TYPES[it.value]!!, it.key, shaderProgram.programId)
+        shader.uniformTypes.forEach {
+            params[it.key] = GLShaderParam(GL_PARAM_TYPES[it.value]!!, it.key, shader.programId)
         }
     }
 
@@ -80,27 +80,24 @@ abstract class VBOShaderProgram {
             (Matrix4f(BIAS) * (Matrix4f(ls!!.projectionMatrix) * (Matrix4f(ls.viewMatrix) * renderable.transform))).toFloatArray()
     }
 
-    fun setMVPMatrixData(data: FloatArray) {
+    protected open fun setMVPMatrixData(data: FloatArray) {
         params[MVP_MATRIX_PARAM_NAME]?.value = data
     }
 
-    fun setMVMatrixData(data: FloatArray) {
+    protected open fun setMVMatrixData(data: FloatArray) {
         params[MV_MATRIX_PARAM_NAME]?.value = data
         params[MV_MATRIXF_PARAM_NAME]?.value = data
     }
 
-    open fun bindMVPMatrix(renderable: IDrawableItem, viewMatrix: Matrix4f, projectionMatrix: Matrix4f) {
+    protected open fun bindMVPMatrix(renderable: IDrawableItem, viewMatrix: Matrix4f, projectionMatrix: Matrix4f) {
         val mMVMatrix = viewMatrix * renderable.transform
         setMVMatrixData(mMVMatrix.toFloatArray())
         setMVPMatrixData((projectionMatrix * mMVMatrix).toFloatArray())
     }
 
-    fun setAdditionalParams(paramMap: Map<String, Any>) {
-        for (entry in paramMap.entries) {
-            val param = params[entry.key]
+    protected open fun getAdditionalParams(scene: GameScene, renderable: IDrawableItem): Map<String, Any>? = null
 
-            if (param != null && param.paramReference >= 0)
-                param.value = entry.value
-        }
+    fun setAdditionalParams(paramMap: Map<String, Any>) {
+        paramMap.entries.forEach { params[it.key]?.value = it.value }
     }
 }

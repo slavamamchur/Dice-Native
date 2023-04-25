@@ -35,14 +35,11 @@ abstract class AbstractGlMesh(var program: VBOShaderProgram): AbstractNode(), ID
         createFacesIBO()
 
         program.params[VERTEXES_PARAM_NAME]?.value = vertexesVBO
-        if (texelsVBO != null)
-            program.params[TEXELS_PARAM_NAME]?.value = texelsVBO
-        if (normalsVBO != null)
-            program.params[NORMALS_PARAM_NAME]?.value = normalsVBO
-        if (facesIBO != null) {
-            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, facesIBO!!.handle)
-            glBindVertexArray(0u)
-        }
+        program.params[TEXELS_PARAM_NAME]?.value = texelsVBO
+        program.params[NORMALS_PARAM_NAME]?.value = normalsVBO
+        facesIBO?.bind()
+
+        glBindVertexArray(0u)
     }
 
     override fun loadFromObject(src: IDrawableItem) {
@@ -62,7 +59,7 @@ abstract class AbstractGlMesh(var program: VBOShaderProgram): AbstractNode(), ID
     }
 
     override fun bind() {
-        program.useProgram()
+        program.bind()
         glBindVertexArray(id)
     }
 
