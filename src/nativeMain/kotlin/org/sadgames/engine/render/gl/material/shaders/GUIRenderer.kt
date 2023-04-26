@@ -4,9 +4,10 @@ import org.sadgames.engine.render.*
 import org.sadgames.engine.render.gl.models.Box2D
 import org.sadgames.engine.scene.GameScene
 import org.sadgames.engine.scene.items.IDrawableItem
+import org.sadgames.engine.scene.items.lights.DirectionalLight
 import org.sadgames.engine.utils.Matrix4f
 
-open class GUIRendererProgram: VBOShaderProgram() {
+open class GUIRenderer: AbstractRenderer() {
     override fun getVertexShaderResId() = GUI_VERTEX_SHADER
     override fun getFragmentShaderResId() = GUI_FRAGMENT_SHADER
     override fun getGeometryShaderResId(): String? = null
@@ -24,4 +25,5 @@ open class GUIRendererProgram: VBOShaderProgram() {
     }
 
     override fun bindMVPMatrix(renderable: IDrawableItem, viewMatrix: Matrix4f, projectionMatrix: Matrix4f) {}
+    override fun bindLightSourceMVP(renderable: IDrawableItem, ls: DirectionalLight?, hasDepthTextureExtension: Boolean) {}
 }

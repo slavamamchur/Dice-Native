@@ -4,7 +4,7 @@ import com.kgl.opengl.*
 import org.sadgames.engine.render.NORMALS_PARAM_NAME
 import org.sadgames.engine.render.TEXELS_PARAM_NAME
 import org.sadgames.engine.render.VERTEXES_PARAM_NAME
-import org.sadgames.engine.render.gl.material.shaders.VBOShaderProgram
+import org.sadgames.engine.render.gl.material.shaders.AbstractRenderer
 import org.sadgames.engine.render.gl.material.shaders.params.VBOData
 import org.sadgames.engine.scene.items.AbstractNode
 import org.sadgames.engine.scene.items.IDrawableItem
@@ -17,7 +17,7 @@ import kotlin.reflect.KProperty
  * Created by Slava Mamchur on 20.03.2023.
  */
 
-abstract class AbstractGlMesh(var program: VBOShaderProgram): AbstractNode(), IDrawableItem {
+abstract class AbstractGlMesh(var program: AbstractRenderer): AbstractNode(), IDrawableItem {
     override var id = glGenVertexArray()
     override val transform = Matrix4f()
     override var rotationX: Float by observable(0f, ::onChange)
@@ -92,7 +92,7 @@ abstract class AbstractGlMesh(var program: VBOShaderProgram): AbstractNode(), ID
     protected open fun createTexelsVBO() {}
     protected open fun createNormalsVBO() {}
     protected open fun createFacesIBO() {}
-    protected inline fun clearVBO(param: VBOData?) = param?.release()
+    private inline fun clearVBO(vbo: VBOData?) = vbo?.release()
 
     protected abstract val facesCount: Int
 

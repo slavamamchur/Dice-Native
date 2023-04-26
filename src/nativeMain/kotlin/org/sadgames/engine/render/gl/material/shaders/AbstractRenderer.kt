@@ -12,7 +12,7 @@ import org.sadgames.engine.scene.items.IDrawableItem
 import org.sadgames.engine.utils.Matrix4f
 import org.sadgames.engine.utils.toFloatArray
 
-abstract class VBOShaderProgram {
+abstract class AbstractRenderer {
     companion object {
         val BIAS = floatArrayOf(0.5f, 0.0f, 0.0f, 0.0f,
             0.0f, 0.5f, 0.0f, 0.0f,
@@ -37,12 +37,13 @@ abstract class VBOShaderProgram {
     open fun bindGlobalParams(engine: GameEngine) {}
     open fun bindLocalParams(scene: GameScene, renderable: IDrawableItem) {
         scene.activeCamera?.let { bindMVPMatrix(renderable, Matrix4f(it.viewMatrix), Matrix4f(it.projectionMatrix)) }
+        scene.globalIllumination?.let { bindLightSourceMVP(renderable, it, true) }
         getAdditionalParams(scene, renderable)?.forEach { params[it.key]?.value = it.value }
     }
 
     protected open fun getGeometryShaderResId(): String? = null
 
-    private fun createNativeShader() = MyShaderProgram(
+    private fun createNativeShader() = ShadersCreator(
                         hashMapOf(
                         GL_VERTEX_SHADER to  getVertexShaderResId()!!,
                         GL_FRAGMENT_SHADER to getFragmentShaderResId()!!).also {

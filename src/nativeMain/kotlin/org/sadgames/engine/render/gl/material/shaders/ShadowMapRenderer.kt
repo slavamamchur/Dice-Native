@@ -10,14 +10,11 @@ import org.sadgames.engine.scene.items.IDrawableItem
 import org.sadgames.engine.utils.Matrix4f
 import org.sadgames.engine.utils.toFloatArray
 
-open class ShadowMapProgram : VBOShaderProgram() {
-
+open class ShadowMapRenderer: AbstractRenderer() {
     override fun getVertexShaderResId() = SHADOWMAP_VERTEX_SHADER_DEPTH_SUPPORT
     override fun getFragmentShaderResId() = SHADOWMAP_FRAGMENT_SHADER_DEPTH_SUPPORT
-    //override fun getGeometryShaderResId(): String? = SHADOWMAP_GEOMETRY_SHADER_DEPTH_SUPPORT
-
     override fun bindGlobalParams(engine: GameEngine) {}
-    override fun bindLocalParams(scene: GameScene, renderable: IDrawableItem) {
+    override fun bindLocalParams(scene: GameScene, renderable: IDrawableItem) { //todo: move to additional params
         val isObjectGroup = renderable.instancedItem
         params[IS_OBJECT_GROUP_PARAM_NAME]?.value = if (isObjectGroup) 1 else 0
 

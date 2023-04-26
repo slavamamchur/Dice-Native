@@ -15,13 +15,13 @@ import org.sadgames.engine.utils.Color4f
 
 class GLRenderer: IRenderer {
     companion object {
-        private val shaderCache: MutableMap<GLObjectType, VBOShaderProgram> = hashMapOf()
+        private val shaderCache: MutableMap<GLObjectType, AbstractRenderer> = hashMapOf()
         fun createShader(type: GLObjectType) = shaderCache[type] ?:  (when (type) {
-                TERRAIN_OBJECT_32 -> ImprovedTerrainRenderer()
+                TERRAIN_OBJECT_32 -> TerrainRenderer()
                 //GLObjectType.WATER_OBJECT -> WaterRendererProgram()
                 //GLObjectType.GEN_TERRAIN_OBJECT -> GenTerrainProgram()
-                SHADOW_MAP_OBJECT -> ShadowMapProgram()
-                GUI_OBJECT -> GUIRendererProgram()
+                SHADOW_MAP_OBJECT -> ShadowMapRenderer()
+                GUI_OBJECT -> GUIRenderer()
                 //GLObjectType.SKY_BOX_OBJECT -> SkyBoxProgram()
                 //GLObjectType.SKY_DOME_OBJECT -> SkyDomeProgram()
                 //GLObjectType.SUN_OBJECT -> SunRendererProgram()
@@ -30,7 +30,7 @@ class GLRenderer: IRenderer {
                 //GLObjectType.REFLECTION_MAP_OBJECT -> ReflectionMapRenderProgram()
                 //GLObjectType.REFRACTION_MAP_OBJECT -> RefractionMapRenderProgram()
                 //GLObjectType.RAYS_MAP_OBJECT -> RaysMapProgram()
-                else -> SimpleTerrainRenderer()
+                else -> SimpleRenderer()
             }).also {shaderCache[type] = it}
     }
 

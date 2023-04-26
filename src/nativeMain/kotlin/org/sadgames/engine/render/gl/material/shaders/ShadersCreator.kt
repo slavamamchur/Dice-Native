@@ -1,14 +1,12 @@
 package org.sadgames.engine.render.gl.material.shaders
 
 import com.kgl.opengl.*
-import io.ktor.utils.io.bits.*
 import io.ktor.utils.io.charsets.*
 import io.ktor.utils.io.core.*
-import io.ktor.utils.io.core.internal.*
 import org.sadgames.engine.utils.ptr
 import org.sadgames.engine.utils.readTextFromFile
 
-class MyShaderProgram internal constructor(private val programList: Map<UInt, String>) {
+class ShadersCreator internal constructor(private val programList: Map<UInt, String>) {
 
     companion object {
         var prependCode = "#version 410\n#define GLES330\n"
