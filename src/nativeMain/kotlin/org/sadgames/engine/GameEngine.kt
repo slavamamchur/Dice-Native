@@ -10,7 +10,7 @@ import org.sadgames.engine.input.MyMouseButtonCallBack
 import org.sadgames.engine.input.MyMouseMoveCallBack
 import org.sadgames.engine.input.MyMouseScrollCallBack
 import org.sadgames.engine.render.IRenderer
-import org.sadgames.engine.render.gl.models.Box2D
+import org.sadgames.engine.render.gl.models.flat.Box2D
 import org.sadgames.engine.scene.GameScene
 import org.sadgames.engine.scene.items.IDrawableItem
 import org.sadgames.engine.utils.Vector4f
@@ -48,7 +48,8 @@ class GameEngine(window: Window, val renderer: IRenderer) {
 
     //todo: show splash, load, hide splash
     private suspend fun loadScene() = withContext(Dispatchers.Default) {
-        scene.putChild(Box2D(Vector4f(-1f, 1f, 1f, -1f),
+        scene.putChild(
+            Box2D(Vector4f(-1f, 1f, 1f, -1f),
                              "/home/slava/blm.jpg").also { it.loadObject() })
     }
 
@@ -61,7 +62,7 @@ class GameEngine(window: Window, val renderer: IRenderer) {
         renderer.onExit()
 
         scene.processTreeItems({ (it as? IDrawableItem)?.release() }) { true }
-        scene.childs.clear()
+        scene.children.clear()
 
         gameCache.values.forEach { it.clearCache() }
     }

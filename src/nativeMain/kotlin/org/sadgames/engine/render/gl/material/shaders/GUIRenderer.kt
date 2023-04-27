@@ -1,7 +1,7 @@
 package org.sadgames.engine.render.gl.material.shaders
 
 import org.sadgames.engine.render.*
-import org.sadgames.engine.render.gl.models.Box2D
+import org.sadgames.engine.render.gl.models.flat.Box2D
 import org.sadgames.engine.scene.GameScene
 import org.sadgames.engine.scene.items.IDrawableItem
 import org.sadgames.engine.scene.items.lights.DirectionalLight

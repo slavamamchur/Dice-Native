@@ -1,6 +1,6 @@
-package org.sadgames.engine.render.gl.models
+package org.sadgames.engine.render.models
 
-data class Raw3DModel(
+data class RawModel(
     var vertexes: FloatArray,
     var uvs: FloatArray?,
     var normals: FloatArray?,
@@ -8,7 +8,7 @@ data class Raw3DModel(
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (other !is Raw3DModel) return false
+        if (other !is RawModel) return false
 
         return vertexes.contentEquals(other.vertexes)
     }

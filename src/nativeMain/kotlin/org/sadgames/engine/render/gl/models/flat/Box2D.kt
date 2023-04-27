@@ -1,4 +1,4 @@
-package org.sadgames.engine.render.gl.models
+package org.sadgames.engine.render.gl.models.flat
 
 import com.kgl.opengl.GL_TRIANGLE_STRIP
 import com.kgl.opengl.glDrawArrays
@@ -10,6 +10,7 @@ import org.sadgames.engine.render.gl.GLRenderer.Companion.createShader
 import org.sadgames.engine.render.gl.material.shaders.params.V2D
 import org.sadgames.engine.render.gl.material.shaders.params.VBOData
 import org.sadgames.engine.render.gl.material.textures.AbstractTexture
+import org.sadgames.engine.render.gl.models.AbstractGlMesh
 import org.sadgames.engine.utils.Vector4f
 
 @Suppress("MemberVisibilityCanBePrivate")

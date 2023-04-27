@@ -105,4 +105,6 @@ abstract class AbstractGlMesh(var program: AbstractRenderer): AbstractNode(), ID
         if (oldVal != newVal)
             updateTransform()
     }
+
+
 }

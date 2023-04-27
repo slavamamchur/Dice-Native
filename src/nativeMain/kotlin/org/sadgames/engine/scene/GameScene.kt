@@ -16,6 +16,6 @@ class GameScene: AbstractNode(0, "ROOT") {
     var activeCamera: AbstractCamera? = null
     var moveFactor = 0f
 
-    val globalIllumination; get() = childs[GLOBAL_LIGHT] as? DirectionalLight
+    val globalIllumination; get() = children[GLOBAL_LIGHT] as? DirectionalLight
 
 }

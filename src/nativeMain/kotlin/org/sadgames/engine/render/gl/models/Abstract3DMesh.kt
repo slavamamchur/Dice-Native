@@ -6,9 +6,10 @@ import org.sadgames.engine.render.gl.material.shaders.params.IDX
 import org.sadgames.engine.render.gl.material.shaders.params.V2D
 import org.sadgames.engine.render.gl.material.shaders.params.V3D
 import org.sadgames.engine.render.gl.material.shaders.params.VBOData
+import org.sadgames.engine.render.models.RawModel
 
 abstract class Abstract3DMesh(program: AbstractRenderer): AbstractGlMesh(program) { //todo: use animation and physics as interfaces
-    protected abstract val model: Raw3DModel
+    protected abstract val model: RawModel
               abstract val material: MaterialProperties
 
     override fun createVertexesVBO() {
